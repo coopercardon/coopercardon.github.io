@@ -3,11 +3,51 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Buuks.in — Discover Your Next Read</title>
+
+  <!-- ══ PRIMARY SEO ══ -->
+  <title>buuks.in — Buy Books Online | 1000+ Books Delivered to Your Door</title>
+  <meta name="description" content="Browse and buy from 1000+ handpicked books across Fiction, Non-Fiction, Self-Help, Philosophy, Science and more. Fast delivery across India. Order in one tap at buuks.in."/>
+  <meta name="keywords" content="buy books online india, books delivery india, fiction books, self help books, order books online, cheap books india, buuks, buuks.in"/>
+  <meta name="author" content="buuks.in"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://coopercardon.github.io/"/>
+
+  <!-- ══ OPEN GRAPH (WhatsApp / Facebook preview) ══ -->
+  <meta property="og:type"        content="website"/>
+  <meta property="og:url"         content="https://coopercardon.github.io/"/>
+  <meta property="og:title"       content="buuks.in — Buy Books Online"/>
+  <meta property="og:description" content="Browse 1000+ books across every genre. Order online, delivered to your door across India."/>
+  <meta property="og:image"       content="https://coopercardon.github.io/og-image.png"/>
+
+  <!-- ══ TWITTER CARD ══ -->
+  <meta name="twitter:card"        content="summary_large_image"/>
+  <meta name="twitter:title"       content="buuks.in — Buy Books Online"/>
+  <meta name="twitter:description" content="Browse 1000+ books across every genre. Order online, delivered to your door across India."/>
+  <meta name="twitter:image"       content="https://coopercardon.github.io/og-image.png"/>
+
+  <!-- ══ STRUCTURED DATA (Google Rich Results) ══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "buuks.in",
+    "description": "Buy books online in India — 1000+ titles across every genre delivered to your door.",
+    "url": "https://coopercardon.github.io/",
+    "telephone": "+91-99999-99998",
+    "email": "coopercardon@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kolkata",
+      "addressRegion": "West Bengal",
+      "addressCountry": "IN"
+    },
+    "openingHours": "Mo-Sa 10:00-19:00",
+    "priceRange": "₹₹"
+  }
+  </script>
+
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
-</head>
-<body>
 </head>
 <body>
 
@@ -155,6 +195,15 @@
 <main id="catalog">
   <div class="statebox"><div class="spinner"></div><p>Loading library…</p></div>
 </main>
+
+<!-- ══ LOAD MORE ══ -->
+<div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+  <div class="load-more-info" id="loadMoreInfo"></div>
+  <button class="btn-load-more" id="loadMoreBtn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    Load More Books
+  </button>
+</div>
 
 <button class="mob-filter-btn" id="mobFilterBtn">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
