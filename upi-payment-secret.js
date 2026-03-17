@@ -1,95 +1,28 @@
 /* ════════════════════════════════════════════════════════════
-   ENHANCED UPI PAYMENT - Light Theme + Auto Confirmation
+   HIDDEN UPI PAYMENT ADDON FOR BUUKS.IN
+   Secret "Pay Online" button at checkout only
+   User: amanthakur386@ptaxis
    ════════════════════════════════════════════════════════════ */
 
+// ⚙️ CONFIGURATION
 const UPI_CONFIG = {
   UPI_ID: 'amanthakur386@ptaxis',
   MERCHANT_NAME: 'BUUKS.IN',
   MERCHANT_NOTES: 'Book Order Payment',
 };
 
-console.log('✅ UPI Payment Script Loaded');
-
 // ════════════════════════════════════════════════════════════
-// Wait for DOM and main script to load, then initialize
-// ════════════════════════════════════════════════════════════
-
-function initializeUPIIntegration() {
-  console.log('🔧 Initializing UPI Integration...');
-
-  // Check if main functions exist
-  if (typeof openOrderForm !== 'function') {
-    console.warn('⏳ openOrderForm not ready yet, retrying...');
-    setTimeout(initializeUPIIntegration, 500);
-    return;
-  }
-
-  console.log('✓ Main functions are ready');
-
-  // Wrap the openOrderForm function
-  const originalOpenOrderForm = openOrderForm;
-  window.openOrderForm = function() {
-    console.log('📝 Opening order form...');
-    originalOpenOrderForm.apply(this, arguments);
-    
-    // Give the form time to render
-    setTimeout(() => {
-      console.log('🎨 Injecting Pay Online button...');
-      addPayOnlineButton();
-    }, 200);
-  };
-
-  console.log('✅ UPI Integration Ready!');
-}
-
-// Wait for page to be fully loaded
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(initializeUPIIntegration, 500);
-  });
-} else {
-  setTimeout(initializeUPIIntegration, 500);
-}
-
-// ════════════════════════════════════════════════════════════
-// Add Pay Online button to form (Light Theme)
+// STEP 1: Add hidden "Pay Online" button to order form
 // ════════════════════════════════════════════════════════════
 
 function addPayOnlineButton() {
-  console.log('🔍 Looking for form...');
-  const formElement = document.getElementById('omForm');
-  
-  if (!formElement) {
-    console.warn('❌ omForm not found');
-    return;
-  }
+  const formElement = $('omForm');
+  if (!formElement) return;
 
-  // Check if button already exists (don't add duplicates)
-  if (document.getElementById('payOnlineBtn')) {
-    console.log('✓ Pay Online button already exists');
-    return;
-  }
-
-  console.log('✓ Found form, creating button...');
-
-  // Find the submit button
-  const submitBtn = formElement.querySelector('.om-submit');
-  if (!submitBtn) {
-    console.warn('❌ Submit button not found');
-    return;
-  }
-
-  // Create Pay Online button - Light theme vibrant green
+  // Insert "Pay Online" button RIGHT AFTER the main submit button
   const payOnlineBtn = document.createElement('button');
   payOnlineBtn.id = 'payOnlineBtn';
   payOnlineBtn.type = 'button';
-  payOnlineBtn.className = 'om-submit'
-  payOnlineBtn.style.cssText = `
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    margin-top: 0.75rem;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  `;
-  
   payOnlineBtn.innerHTML = `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <rect x="1" y="4" width="22" height="16" rx="2"/>
@@ -97,93 +30,49 @@ function addPayOnlineButton() {
     </svg>
     Pay Online
   `;
-
+  payOnlineBtn.style.cssText = `
+    height: 44px;
+    padding: 0 1.5rem;
+    background: #1d9e75;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: background 0.15s;
+    margin-top: 0.75rem;
+    letter-spacing: -0.01em;
+    width: 100%;
+  `;
+  
   payOnlineBtn.addEventListener('mouseover', () => {
-    payOnlineBtn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
-    payOnlineBtn.style.transform = 'translateY(-2px)';
+    payOnlineBtn.style.background = '#0d8344';
   });
-  
   payOnlineBtn.addEventListener('mouseout', () => {
-    payOnlineBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-    payOnlineBtn.style.transform = 'translateY(0)';
+    payOnlineBtn.style.background = '#1d9e75';
   });
+  payOnlineBtn.addEventListener('click', handlePayOnlineClick);
 
-  payOnlineBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    handlePayOnlineClick();
-  });
-
-  // Insert after submit button
-  submitBtn.parentElement.appendChild(payOnlineBtn);
-  console.log('✅ Pay Online button added successfully!');
+  // Find the last button in the form and insert after it
+  const lastButton = formElement.querySelector('.om-submit');
+  if (lastButton) {
+    lastButton.parentElement.appendChild(payOnlineBtn);
+  }
 }
 
 // ════════════════════════════════════════════════════════════
-// Handle Pay Online click
-// ════════════════════════════════════════════════════════════
-
-function handlePayOnlineClick() {
-  console.log('💳 Pay Online clicked');
-  
-  // Validate fields
-  const name    = document.getElementById('omName')?.value.trim();
-  const phone   = document.getElementById('omPhone')?.value.trim();
-  const email   = document.getElementById('omEmail')?.value.trim();
-  const address = document.getElementById('omAddress')?.value.trim();
-
-  // Mark errors
-  let valid = true;
-  [
-    ['omName', name],
-    ['omPhone', phone],
-    ['omEmail', email],
-    ['omAddress', address]
-  ].forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el) {
-      if (!val) {
-        el.classList.add('error');
-        valid = false;
-      } else {
-        el.classList.remove('error');
-      }
-    }
-  });
-
-  if (!valid) {
-    showToast('Please fill all required fields');
-    return;
-  }
-
-  console.log('✓ Fields validated');
-
-  // Calculate total (assuming cart global exists)
-  if (typeof cart === 'undefined') {
-    console.error('❌ Cart object not found');
-    showToast('Error: Cart not found');
-    return;
-  }
-
-  const items     = Object.values(cart);
-  const subAmt    = items.reduce((s, i) => s + parseFloat((i.book.price || '0').replace(/[^\d.]/g, '')) * i.qty, 0);
-  const delAmt    = subAmt >= 499 ? 0 : 50;
-  const totalAmt  = subAmt + delAmt;
-  
-  const orderId = generateOrderId();
-
-  console.log(`💰 Total: ₹${totalAmt}`);
-
-  // Show UPI payment screen
-  showUPIPaymentModal(totalAmt, orderId, name, phone, email, address);
-}
-
-// ════════════════════════════════════════════════════════════
-// Generate UPI QR Code
+// STEP 2: Generate UPI string and QR code
 // ════════════════════════════════════════════════════════════
 
 function generateUPIString(amount, orderId) {
   const upiString = `upi://pay?pa=${UPI_CONFIG.UPI_ID}&pn=${UPI_CONFIG.MERCHANT_NAME}&am=${amount}&tn=${encodeURIComponent(UPI_CONFIG.MERCHANT_NOTES)}&tr=${orderId}`;
-  console.log('Generated UPI string for amount:', amount);
   return upiString;
 }
 
@@ -192,101 +81,110 @@ function generateQRCodeURL(upiString) {
 }
 
 // ════════════════════════════════════════════════════════════
-// Show UPI Payment Modal (Light Theme)
+// STEP 3: Handle "Pay Online" button click
+// ════════════════════════════════════════════════════════════
+
+function handlePayOnlineClick() {
+  // Validate all fields first
+  const name    = $('omName').value.trim();
+  const phone   = $('omPhone').value.trim();
+  const email   = $('omEmail').value.trim();
+  const address = $('omAddress').value.trim();
+  let valid = true;
+
+  [['omName', name], ['omPhone', phone], ['omEmail', email], ['omAddress', address]].forEach(([id, val]) => {
+    if (!val) { $(id).classList.add('error'); valid = false; }
+    else $(id).classList.remove('error');
+  });
+
+  if (!valid) { 
+    showToast('Please fill all required fields');
+    return; 
+  }
+
+  // Calculate total
+  const items     = Object.values(cart);
+  const subAmt    = items.reduce((s,i) => s + px(i.book)*i.qty, 0);
+  const delAmt    = subAmt >= 499 ? 0 : 50;
+  const totalAmt  = subAmt + delAmt;
+  const orderId   = generateOrderId();
+
+  // Show UPI payment screen
+  showUPIPaymentModal(totalAmt, orderId, name, phone, email, address);
+}
+
+// ════════════════════════════════════════════════════════════
+// STEP 4: Show UPI Payment Modal (beautiful design)
 // ════════════════════════════════════════════════════════════
 
 function showUPIPaymentModal(amount, orderId, name, phone, email, address) {
-  console.log('🎯 Showing UPI payment modal');
-  
   const upiString = generateUPIString(amount, orderId);
   const qrURL = generateQRCodeURL(upiString);
 
+  // Create modal overlay
   const modalHTML = `
     <div id="upiPaymentModal" style="
       position: fixed;
       inset: 0;
-      background: rgba(28, 29, 48, 0.5);
+      background: rgba(28, 29, 48, 0.6);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 2000;
       padding: 1rem;
-      backdrop-filter: blur(8px);
-      animation: fadeIn 0.25s ease-out;
+      backdrop-filter: blur(4px);
     ">
       <div style="
-        background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-        border-radius: 24px;
-        padding: 2.5rem;
-        max-width: 460px;
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 440px;
         width: 100%;
         text-align: center;
-        box-shadow: 0 20px 60px rgba(28, 29, 48, 0.15), 0 0 1px rgba(28, 29, 48, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.1);
-        animation: modalSlideUp 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+        box-shadow: 0 20px 60px rgba(28, 29, 48, 0.2);
+        animation: modalSlideUp 0.3s ease-out;
       ">
         <!-- Header -->
-        <div style="margin-bottom: 1.75rem;">
-          <div style="
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #ecfdf5 0%, #dcfce7 100%);
-            border-radius: 16px;
-            margin: 0 auto 1rem;
-            border: 2px solid #10b981;
-            font-size: 1.75rem;
-          ">🔐</div>
-          <div style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #10b981; margin-bottom: 0.5rem;">Secure Payment</div>
-          <h2 style="font-size: 1.6rem; font-weight: 800; color: #1c1d30; margin: 0; letter-spacing: -0.02em;">Pay via UPI</h2>
-          <p style="font-size: 0.85rem; color: #9496b2; margin-top: 0.5rem; margin-bottom: 0;">Order #${orderId}</p>
+        <div style="margin-bottom: 1.5rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1d9e75; margin-bottom: 0.5rem;">🔐 Secure Payment</div>
+          <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text); margin: 0;">Pay via UPI</h2>
+          <p style="font-size: 0.85rem; color: var(--text3); margin-top: 0.5rem;">Order #${orderId}</p>
         </div>
 
-        <!-- QR Code Section -->
+        <!-- QR Code -->
         <div style="
-          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-          border: 2px dashed #10b981;
-          border-radius: 18px;
-          padding: 1.75rem 1.5rem;
-          margin-bottom: 1.75rem;
+          background: var(--surface);
+          border: 2px dashed var(--border);
+          border-radius: 16px;
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
         ">
-          <p style="font-size: 0.72rem; color: #10b981; margin: 0 0 1rem 0; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">📱 Scan QR Code</p>
-          <img src="${qrURL}" alt="UPI QR Code" style="
-            width: 220px;
-            height: 220px;
-            margin: 0 auto;
-            display: block;
-            border-radius: 12px;
-            background: white;
-            padding: 8px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
-          "/>
-          <p style="font-size: 0.72rem; color: #059669; margin-top: 1rem; margin-bottom: 0; font-weight: 600;">Using Google Pay, PhonePe, or BHIM</p>
+          <p style="font-size: 0.75rem; color: var(--text3); margin: 0 0 0.75rem 0; text-transform: uppercase; font-weight: 600;">Scan QR Code</p>
+          <img src="${qrURL}" alt="UPI QR Code" style="width: 200px; height: 200px; margin: 0 auto; display: block; border-radius: 8px;"/>
+          <p style="font-size: 0.75rem; color: var(--text3); margin-top: 0.75rem; margin-bottom: 0;">With Google Pay, PhonePe, or BHIM</p>
         </div>
 
-        <!-- Amount Card -->
+        <!-- Amount Box -->
         <div style="
-          background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-          border: 2px solid #10b981;
-          border-radius: 14px;
-          padding: 1.25rem;
-          margin-bottom: 1.75rem;
+          background: #e8faf2;
+          border: 1.5px solid #15a05b;
+          border-radius: 12px;
+          padding: 1rem;
+          margin-bottom: 1.5rem;
         ">
-          <div style="font-size: 0.72rem; color: #059669; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.5rem;">💵 Amount to Pay</div>
-          <div style="font-size: 2.2rem; font-weight: 800; color: #10b981; letter-spacing: -0.02em;">₹${amount}</div>
+          <div style="font-size: 0.75rem; color: #15a05b; text-transform: uppercase; font-weight: 600; margin-bottom: 0.25rem;">💵 Amount to Pay</div>
+          <div style="font-size: 2rem; font-weight: 800; color: #15a05b; letter-spacing: -0.02em;">₹${amount}</div>
         </div>
 
-        <!-- Open Payment Link -->
+        <!-- Direct Link -->
         <a href="${upiString}" style="
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.6rem;
+          gap: 0.5rem;
           width: 100%;
-          padding: 15px;
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          padding: 14px;
+          background: #1d9e75;
           color: white;
           border: none;
           border-radius: 12px;
@@ -295,788 +193,162 @@ function showUPIPaymentModal(amount, orderId, name, phone, email, address) {
           font-weight: 700;
           cursor: pointer;
           text-decoration: none;
-          margin-bottom: 1.25rem;
-          transition: all 0.2s;
-          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-          letter-spacing: -0.01em;
-        " onmouseover="
-          this.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
-          this.style.transform = 'translateY(-2px)';
-          this.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.35)';
-        " onmouseout="
-          this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-          this.style.transform = 'translateY(0)';
-          this.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-        ">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          <span>Open in Google Pay / PhonePe</span>
+          margin-bottom: 1rem;
+          transition: background 0.15s;
+        " onmouseover="this.style.background = '#0d8344'" onmouseout="this.style.background = '#1d9e75'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Open in Google Pay / PhonePe
         </a>
 
-        <!-- Action Buttons -->
-        <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
-          <button id="paymentDoneBtn" onclick="confirmUPIPaymentWithAnimation('${orderId}', ${amount}, '${name}', '${phone}', '${email}', '${address}')" style="
+        <!-- Confirmation Buttons -->
+        <div style="display: flex; gap: 0.75rem;">
+          <button onclick="confirmUPIPayment('${orderId}', ${amount}, '${name}', '${phone}', '${email}', '${address}')" style="
             flex: 1;
-            padding: 13px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 12px;
+            background: #15a05b;
             color: white;
             border: none;
-            border-radius: 11px;
+            border-radius: 10px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
-            letter-spacing: -0.01em;
-          " onmouseover="
-            this.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
-            this.style.transform = 'translateY(-1px)';
-            this.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-          " onmouseout="
-            this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.2)';
-          ">
-            <span class="payment-done-text">✓ Payment Done</span>
-            <span class="payment-spinner" style="display: none; margin-left: 0.5rem;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation: spin 0.8s linear infinite;">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 6v6l4 2"/>
-              </svg>
-            </span>
+            transition: background 0.15s;
+          " onmouseover="this.style.background = '#0d8344'" onmouseout="this.style.background = '#15a05b'">
+            ✓ Payment Done
           </button>
           <button onclick="closeUPIModal()" style="
             flex: 1;
-            padding: 13px;
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            color: #6b7280;
-            border: 1.5px solid #d1d5db;
-            border-radius: 11px;
+            padding: 12px;
+            background: var(--surface);
+            color: var(--text2);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: -0.01em;
-          " onmouseover="
-            this.style.background = 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)';
-            this.style.transform = 'translateY(-1px)';
-          " onmouseout="
-            this.style.background = 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)';
-            this.style.transform = 'translateY(0)';
-          ">
+            transition: all 0.15s;
+          " onmouseover="this.style.background = 'var(--border)'" onmouseout="this.style.background = 'var(--surface)'">
             Cancel
           </button>
         </div>
 
-        <!-- Info Text -->
-        <p style="font-size: 0.74rem; color: #6b7280; margin: 0; line-height: 1.6;">
-          🔒 <strong style="color: #374151;">Secure payment link</strong> — Complete payment in your UPI app, then click "Payment Done" to confirm your order.
+        <!-- Security Note -->
+        <p style="font-size: 0.75rem; color: var(--text3); margin-top: 1.25rem; line-height: 1.6;">
+          🔒 <strong>Secure payment link</strong> — You'll be back here after payment. Click "Payment Done" to confirm order.
         </p>
       </div>
 
       <style>
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
         @keyframes modalSlideUp {
           from {
             opacity: 0;
-            transform: translateY(24px) scale(0.96);
+            transform: translateY(20px);
           }
           to {
             opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
+            transform: translateY(0);
           }
         }
       </style>
     </div>
   `;
 
-  // Remove existing modal
+  // Remove existing modal if any
   const existing = document.getElementById('upiPaymentModal');
   if (existing) existing.remove();
 
   // Add new modal
   document.body.insertAdjacentHTML('beforeend', modalHTML);
   document.body.style.overflow = 'hidden';
-  console.log('✅ Modal displayed');
 }
 
 function closeUPIModal() {
-  console.log('❌ UPI modal closed');
   const modal = document.getElementById('upiPaymentModal');
-  if (modal) {
-    modal.style.animation = 'fadeIn 0.25s ease-out reverse';
-    setTimeout(() => {
-      modal.remove();
-    }, 250);
-  }
+  if (modal) modal.remove();
   document.body.style.overflow = '';
 }
 
 // ════════════════════════════════════════════════════════════
-// Confirm UPI Payment with Auto Animation
+// STEP 5: Confirm payment and submit order
 // ════════════════════════════════════════════════════════════
 
-function confirmUPIPaymentWithAnimation(orderId, amount, name, phone, email, address) {
-  console.log('✅ Payment confirmed with animation:', orderId);
-  
-  // Show loading state in button
-  const doneBtn = document.getElementById('paymentDoneBtn');
-  if (doneBtn) {
-    doneBtn.disabled = true;
-    doneBtn.style.opacity = '0.7';
-    const textSpan = doneBtn.querySelector('.payment-done-text');
-    const spinnerSpan = doneBtn.querySelector('.payment-spinner');
-    if (textSpan) textSpan.style.display = 'none';
-    if (spinnerSpan) spinnerSpan.style.display = 'inline';
-  }
+function confirmUPIPayment(orderId, amount, name, phone, email, address) {
+  closeUPIModal();
 
-  // Close modal after brief delay
-  setTimeout(() => {
-    closeUPIModal();
-    
-    // Show processing overlay
-    showProcessingOverlay(orderId);
-    
-    // Process payment
-    processUPIPayment(orderId, amount, name, phone, email, address);
-  }, 800);
-}
-
-// ════════════════════════════════════════════════════════════
-// Processing Overlay (Buffer between modal close & success)
-// ════════════════════════════════════════════════════════════
-
-function showProcessingOverlay(orderId) {
-  console.log('⏳ Showing processing overlay...');
-  
-  const overlayHTML = `
-    <div id="processingOverlay" style="
-      position: fixed;
-      inset: 0;
-      background: rgba(28, 29, 48, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1500;
-      backdrop-filter: blur(8px);
-      animation: fadeIn 0.3s ease-out;
-    ">
-      <div style="
-        text-align: center;
-        color: white;
-      ">
-        <!-- Animated Spinner -->
-        <div style="
-          width: 80px;
-          height: 80px;
-          margin: 0 auto 2rem;
-          position: relative;
-        ">
-          <!-- Outer rotating ring -->
-          <div style="
-            position: absolute;
-            inset: 0;
-            border: 4px solid rgba(16, 185, 129, 0.2);
-            border-top-color: #10b981;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-          "></div>
-          
-          <!-- Inner pulsing circle -->
-          <div style="
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border-radius: 50%;
-            animation: pulse 1.5s ease-in-out infinite;
-          "></div>
-        </div>
-
-        <!-- Processing Text -->
-        <h2 style="
-          font-size: 1.4rem;
-          font-weight: 800;
-          margin: 0 0 0.75rem 0;
-          letter-spacing: -0.02em;
-        ">Confirming Order</h2>
-        
-        <p style="
-          font-size: 0.95rem;
-          color: rgba(255, 255, 255, 0.7);
-          margin: 0;
-          line-height: 1.6;
-          max-width: 280px;
-          margin: 0 auto;
-        ">
-          Please wait while we verify your payment and confirm your order...
-        </p>
-
-        <!-- Order ID -->
-        <div style="
-          margin-top: 1.5rem;
-          padding: 0.75rem 1.25rem;
-          background: rgba(16, 185, 129, 0.15);
-          border: 1px solid rgba(16, 185, 129, 0.3);
-          border-radius: 10px;
-          font-family: monospace;
-          font-size: 0.8rem;
-          color: #10b981;
-          letter-spacing: 0.05em;
-          font-weight: 600;
-        ">
-          Order #${orderId}
-        </div>
-      </div>
-
-      <style>
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-          }
-          50% {
-            opacity: 0.5;
-            transform: translate(-50%, -50%) scale(0.85);
-          }
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-      </style>
-    </div>
-  `;
-
-  // Remove any existing overlay
-  const existing = document.getElementById('processingOverlay');
-  if (existing) existing.remove();
-
-  // Add processing overlay
-  document.body.insertAdjacentHTML('beforeend', overlayHTML);
-  document.body.style.overflow = 'hidden';
-  console.log('✅ Processing overlay shown');
-}
-
-function closeProcessingOverlay() {
-  console.log('✅ Closing processing overlay');
-  const overlay = document.getElementById('processingOverlay');
-  if (overlay) {
-    overlay.style.animation = 'fadeIn 0.3s ease-out reverse';
-    setTimeout(() => {
-      overlay.remove();
-    }, 300);
-  }
-}
-
-// ════════════════════════════════════════════════════════════
-// Payment Verification Popup
-// ════════════════════════════════════════════════════════════
-
-function showPaymentVerificationPopup(orderId) {
-  console.log('🔍 Showing payment verification popup...');
-  
-  const popupHTML = `
-    <div id="paymentVerificationModal" style="
-      position: fixed;
-      inset: 0;
-      background: rgba(28, 29, 48, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2100;
-      padding: 1rem;
-      backdrop-filter: blur(8px);
-      animation: fadeIn 0.3s ease-out;
-    ">
-      <div style="
-        background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-        border-radius: 24px;
-        padding: 2.5rem;
-        max-width: 460px;
-        width: 100%;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(28, 29, 48, 0.15), 0 0 1px rgba(28, 29, 48, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.1);
-        animation: modalSlideUp 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
-      ">
-        <!-- Header -->
-        <div style="margin-bottom: 1.75rem;">
-          <div style="
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #ecfdf5 0%, #dcfce7 100%);
-            border-radius: 18px;
-            margin: 0 auto 1.25rem;
-            border: 2px solid #10b981;
-            font-size: 2rem;
-          ">❓</div>
-          <h2 style="font-size: 1.6rem; font-weight: 800; color: #1c1d30; margin: 0; letter-spacing: -0.02em;">Verify Payment</h2>
-          <p style="font-size: 0.9rem; color: #9496b2; margin-top: 0.75rem; margin-bottom: 0; line-height: 1.6;">
-            Did you successfully send the payment of <span style="font-weight: 700; color: #10b981;">₹${getCartTotal()}</span>?
-          </p>
-        </div>
-
-        <!-- Payment Status Info -->
-        <div style="
-          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-          border: 1.5px solid #10b981;
-          border-radius: 14px;
-          padding: 1rem;
-          margin-bottom: 2rem;
-        ">
-          <p style="
-            font-size: 0.85rem;
-            color: #059669;
-            margin: 0;
-            line-height: 1.6;
-            font-weight: 600;
-          ">
-            ✓ Payment sent from your Google Pay / PhonePe app?
-          </p>
-          <p style="
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin: 0.75rem 0 0 0;
-            line-height: 1.5;
-          ">
-            Order #${orderId} · Check your UPI app for payment confirmation
-          </p>
-        </div>
-
-        <!-- Action Buttons -->
-        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-          <!-- Payment Sent Button -->
-          <button onclick="confirmPaymentSuccess('${orderId}')" style="
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            letter-spacing: -0.01em;
-          " onmouseover="
-            this.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
-            this.style.transform = 'translateY(-2px)';
-            this.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.35)';
-          " onmouseout="
-            this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-            this.style.transform = 'translateY(0)';
-            this.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-          ">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-right: 0.5rem; vertical-align: middle;">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-            Yes, Payment Sent ✓
-          </button>
-
-          <!-- Payment Failed Button -->
-          <button onclick="showPaymentFailedPopup('${orderId}')" style="
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            color: #991b1b;
-            border: 1.5px solid #fca5a5;
-            border-radius: 12px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: -0.01em;
-          " onmouseover="
-            this.style.background = 'linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)';
-            this.style.transform = 'translateY(-2px)';
-          " onmouseout="
-            this.style.background = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)';
-            this.style.transform = 'translateY(0)';
-          ">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-right: 0.5rem; vertical-align: middle;">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-            No, Payment Failed
-          </button>
-        </div>
-
-        <!-- Info -->
-        <p style="font-size: 0.74rem; color: #9496b2; margin-top: 1.5rem; margin-bottom: 0; line-height: 1.6;">
-          💡 Once you confirm payment, your order will be marked as verified in our system.
-        </p>
-      </div>
-
-      <style>
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes modalSlideUp {
-          from {
-            opacity: 0;
-            transform: translateY(24px) scale(0.96);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-      </style>
-    </div>
-  `;
-
-  // Remove existing modal
-  const existing = document.getElementById('paymentVerificationModal');
-  if (existing) existing.remove();
-
-  // Add new modal
-  document.body.insertAdjacentHTML('beforeend', popupHTML);
-  document.body.style.overflow = 'hidden';
-  console.log('✅ Verification popup displayed');
-}
-
-function confirmPaymentSuccess(orderId) {
-  console.log('✅ Payment verified as successful:', orderId);
-  closePaymentVerificationPopup();
-  
-  // Show success screen
-  setTimeout(() => {
-    if (typeof showSuccessScreen === 'function') {
-      showSuccessScreen(orderId, false);
-    }
-    console.log('✅ Success screen displayed!');
-  }, 300);
-}
-
-function showPaymentFailedPopup(orderId) {
-  console.log('❌ Payment marked as failed:', orderId);
-  closePaymentVerificationPopup();
-
-  // Show failed popup
-  setTimeout(() => {
-    const failedHTML = `
-      <div id="paymentFailedModal" style="
-        position: fixed;
-        inset: 0;
-        background: rgba(28, 29, 48, 0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 2100;
-        padding: 1rem;
-        backdrop-filter: blur(8px);
-        animation: fadeIn 0.3s ease-out;
-      ">
-        <div style="
-          background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
-          border-radius: 24px;
-          padding: 2.5rem;
-          max-width: 460px;
-          width: 100%;
-          text-align: center;
-          box-shadow: 0 20px 60px rgba(28, 29, 48, 0.15), 0 0 1px rgba(28, 29, 48, 0.1);
-          border: 1px solid rgba(220, 38, 38, 0.1);
-          animation: modalSlideUp 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
-        ">
-          <!-- Header -->
-          <div style="margin-bottom: 1.75rem;">
-            <div style="
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              width: 70px;
-              height: 70px;
-              background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-              border-radius: 18px;
-              margin: 0 auto 1.25rem;
-              border: 2px solid #dc2626;
-              font-size: 2rem;
-            ">⚠️</div>
-            <h2 style="font-size: 1.6rem; font-weight: 800; color: #1c1d30; margin: 0; letter-spacing: -0.02em;">Payment Not Sent</h2>
-            <p style="font-size: 0.9rem; color: #9496b2; margin-top: 0.75rem; margin-bottom: 0; line-height: 1.6;">
-              We didn't receive your payment confirmation. What would you like to do?
-            </p>
-          </div>
-
-          <!-- Options -->
-          <div style="
-            background: linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%);
-            border: 1.5px solid #fecaca;
-            border-radius: 14px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-          ">
-            <p style="
-              font-size: 0.85rem;
-              color: #991b1b;
-              margin: 0;
-              line-height: 1.6;
-              font-weight: 600;
-            ">
-              Order #${orderId}
-            </p>
-            <p style="
-              font-size: 0.75rem;
-              color: #6b7280;
-              margin: 0.75rem 0 0 0;
-              line-height: 1.5;
-            ">
-              You can try again or use Cash on Delivery instead.
-            </p>
-          </div>
-
-          <!-- Action Buttons -->
-          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <!-- Retry Button -->
-            <button onclick="retryUPIPayment('${orderId}')" style="
-              width: 100%;
-              padding: 15px;
-              background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-              color: white;
-              border: none;
-              border-radius: 12px;
-              font-family: 'Plus Jakarta Sans', sans-serif;
-              font-size: 0.95rem;
-              font-weight: 700;
-              cursor: pointer;
-              transition: all 0.2s;
-              box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
-              letter-spacing: -0.01em;
-            " onmouseover="
-              this.style.background = 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)';
-              this.style.transform = 'translateY(-2px)';
-              this.style.boxShadow = '0 8px 20px rgba(249, 115, 22, 0.35)';
-            " onmouseout="
-              this.style.background = 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)';
-              this.style.transform = 'translateY(0)';
-              this.style.boxShadow = '0 4px 12px rgba(249, 115, 22, 0.3)';
-            ">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-right: 0.5rem; vertical-align: middle;">
-                <path d="M21 2v6h-6"></path>
-                <path d="M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6"></path>
-                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
-              </svg>
-              Try UPI Payment Again
-            </button>
-
-            <!-- Use COD Button -->
-            <button onclick="closePaymentFailedPopup()" style="
-              width: 100%;
-              padding: 15px;
-              background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-              color: #6b7280;
-              border: 1.5px solid #d1d5db;
-              border-radius: 12px;
-              font-family: 'Plus Jakarta Sans', sans-serif;
-              font-size: 0.95rem;
-              font-weight: 700;
-              cursor: pointer;
-              transition: all 0.2s;
-              letter-spacing: -0.01em;
-            " onmouseover="
-              this.style.background = 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)';
-              this.style.transform = 'translateY(-2px)';
-            " onmouseout="
-              this.style.background = 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)';
-              this.style.transform = 'translateY(0)';
-            ">
-              Use Cash on Delivery Instead
-            </button>
-          </div>
-
-          <!-- Info -->
-          <p style="font-size: 0.74rem; color: #9496b2; margin-top: 1.5rem; margin-bottom: 0; line-height: 1.6;">
-            💡 If you already sent the payment, click "Try UPI Payment Again" to verify.
-          </p>
-        </div>
-
-        <style>
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          @keyframes modalSlideUp {
-            from {
-              opacity: 0;
-              transform: translateY(24px) scale(0.96);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0) scale(1);
-            }
-          }
-        </style>
-      </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', failedHTML);
-  }, 300);
-}
-
-function retryUPIPayment(orderId) {
-  console.log('🔄 Retrying UPI payment for:', orderId);
-  closePaymentFailedPopup();
-  
-  // Show verification popup again
-  setTimeout(() => {
-    showPaymentVerificationPopup(orderId);
-  }, 300);
-}
-
-function closePaymentVerificationPopup() {
-  console.log('❌ Verification popup closed');
-  const modal = document.getElementById('paymentVerificationModal');
-  if (modal) {
-    modal.style.animation = 'fadeIn 0.25s ease-out reverse';
-    setTimeout(() => {
-      modal.remove();
-    }, 250);
-  }
-  document.body.style.overflow = '';
-}
-
-function closePaymentFailedPopup() {
-  console.log('❌ Failed popup closed');
-  const modal = document.getElementById('paymentFailedModal');
-  if (modal) {
-    modal.style.animation = 'fadeIn 0.25s ease-out reverse';
-    setTimeout(() => {
-      modal.remove();
-    }, 250);
-  }
-  document.body.style.overflow = '';
-  
-  // User selected COD, reload to go back
-  setTimeout(() => {
-    location.reload();
-  }, 300);
-}
-
-function getCartTotal() {
-  if (typeof cart === 'undefined') return 0;
-  const items = Object.values(cart);
-  const subAmt = items.reduce((s, i) => s + parseFloat((i.book.price || '0').replace(/[^\d.]/g, '')) * i.qty, 0);
-  const delAmt = subAmt >= 499 ? 0 : 50;
-  return subAmt + delAmt;
-}
-
-function processUPIPayment(orderId, amount, name, phone, email, address) {
-  console.log('💳 Processing UPI payment...');
-
-  const note = document.getElementById('omNote')?.value.trim() || '';
+  const note = $('omNote').value.trim();
   const items     = Object.values(cart);
   const titles    = items.map(i => `${i.book.title} (x${i.qty})`).join(', ');
   const isbns     = items.map(i => `${i.book.isbn||'—'} (x${i.qty})`).join(', ');
-  const totalQty  = items.reduce((s, i) => s + i.qty, 0);
-  const subAmt    = items.reduce((s, i) => s + parseFloat((i.book.price || '0').replace(/[^\d.]/g, '')) * i.qty, 0);
+  const totalQty  = items.reduce((s,i) => s + i.qty, 0);
+  const subAmt    = items.reduce((s,i) => s + px(i.book)*i.qty, 0);
   const delAmt    = subAmt >= 499 ? 0 : 50;
   const totalAmt  = subAmt + delAmt;
   const timestamp = new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'});
 
   const payload = {
-    orderId, timestamp, name, phone, email, address, note,
-    titles, isbns, totalQty,
+    orderId: orderId,
+    timestamp: timestamp,
+    name: name,
+    phone: phone,
+    email: email,
+    address: address,
+    note: note,
+    titles: titles,
+    isbns: isbns,
+    totalQty: totalQty,
     subtotal: `₹${subAmt}`,
     delivery: delAmt === 0 ? 'FREE' : `₹${delAmt}`,
     totalAmt: `₹${totalAmt}`,
     paymentMethod: 'UPI',
-    paymentStatus: 'Verified'
+    paymentStatus: 'Awaiting Verification'
   };
 
-  console.log('📊 Order payload:', payload);
-
   // Send to Google Sheet
-  if (typeof APPS_SCRIPT_URL !== 'undefined' && APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     }).then(() => {
-      console.log('✓ Order sent to sheet');
       completePaymentFlow(orderId);
     }).catch(err => {
-      console.error('❌ Send error:', err);
+      console.error('Error submitting order:', err);
       completePaymentFlow(orderId);
     });
   } else {
-    console.log('⚠️ Apps Script URL not configured, skipping sheet save');
+    console.log('Order placed (Apps Script not configured):', payload);
     completePaymentFlow(orderId);
   }
 }
 
 function completePaymentFlow(orderId) {
-  console.log('🎉 Completing payment flow with animation...');
-  
-  // Close order form
-  if (typeof closeOrderForm === 'function') {
-    closeOrderForm();
-  }
+  // Close form
+  closeOrderForm();
 
   // Clear cart
-  if (typeof cart === 'object') {
-    cart = {};
-  }
-  if (typeof updateCartUI === 'function') {
-    updateCartUI();
-  }
-  if (typeof renderBooks === 'function') {
-    renderBooks();
-  }
+  cart = {};
+  updateCartUI();
+  renderBooks();
 
-  // Wait a moment, then close processing overlay and show verification
-  setTimeout(() => {
-    // Close processing overlay
-    closeProcessingOverlay();
-    
-    // Brief pause before verification popup
-    setTimeout(() => {
-      showPaymentVerificationPopup(orderId);
-    }, 400);
-  }, 1500);
+  // Show success screen
+  showSuccessScreen(orderId, false);
 }
 
-console.log('✅ UPI Payment Script fully loaded and ready');
+// ════════════════════════════════════════════════════════════
+// STEP 6: Initialize when order form opens
+// ════════════════════════════════════════════════════════════
+
+const originalOpenOrderForm = openOrderForm;
+openOrderForm = function() {
+  originalOpenOrderForm.apply(this, arguments);
+  setTimeout(() => {
+    addPayOnlineButton();
+  }, 100);
+};
+
+// ════════════════════════════════════════════════════════════
+// Done! Silent integration complete.
+// ════════════════════════════════════════════════════════════
