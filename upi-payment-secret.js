@@ -306,7 +306,7 @@ function confirmUPIPayment(orderId, amount, name, phone, email, address) {
   };
 
   // Send to Google Sheet
-  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxD_z9H9WKFSxDn8_YtxhxKVh3Bc6kR5hv8aP8u10_SIgB-rSPm5eHaDAN38962o5wZXQ/exec') {
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
