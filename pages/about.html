@@ -284,6 +284,8 @@
     /* Content sections */
     .about-section {
       background: var(--white);
+      background-image: radial-gradient(var(--border2) 1.2px, transparent 1.2px);
+      background-size: 26px 26px;
       padding: 3.5rem 1.5rem;
       border-bottom: 1px solid var(--border);
     }
@@ -377,6 +379,34 @@
       color: var(--text2);
       line-height: 1.65;
     }
+
+    /* Simple contact section */
+    .contact-simple {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .contact-item-label {
+      font-size: 0.8rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+
+    .contact-item-value {
+      font-size: 1rem;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.6;
+    }
     
     /* Two-column layout */
     .two-col {
@@ -437,43 +467,7 @@
       line-height: 1.6;
     }
     
-    /* Stats row */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-    }
-    
-    .stat-box {
-      background: var(--white);
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-lg);
-      padding: 1.75rem;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    
-    .stat-box:hover {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-bg);
-    }
-    
-    .stat-number {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.03em;
-    }
-    
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 600;
-    }
+
     
     /* CTA section */
     .about-cta {
@@ -763,35 +757,6 @@
   </div>
 </section>
 
-<!-- ══ STATS ══ -->
-<section class="about-section">
-  <div class="section-container">
-    <h2 class="section-title" style="text-align: center; margin-bottom: 2.5rem;">By The Numbers</h2>
-    
-    <div class="stats-grid">
-      <div class="stat-box">
-        <div class="stat-number">2.5K+</div>
-        <div class="stat-label">Books in Library</div>
-      </div>
-      
-      <div class="stat-box">
-        <div class="stat-number">45+</div>
-        <div class="stat-label">Genres & Categories</div>
-      </div>
-      
-      <div class="stat-box">
-        <div class="stat-number">8K+</div>
-        <div class="stat-label">Happy Readers</div>
-      </div>
-      
-      <div class="stat-box">
-        <div class="stat-number">100%</div>
-        <div class="stat-label">Handpicked Quality</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ══ CTA SECTION ══ -->
 <section class="about-cta">
   <div class="cta-container">
@@ -810,23 +775,22 @@
     <div class="section-badge"><span></span>Get In Touch</div>
     <h2 class="section-title">Questions? We'd <span class="accent">Love to Help</span></h2>
     
-    <div class="content-grid">
-      <div class="content-card">
-        <div class="card-icon">📞</div>
-        <div class="card-title">Phone</div>
-        <div class="card-text">+91 99999 99999<br/><small style="color: var(--text3); font-size: 0.8rem;">Mon–Sat, 10am–7pm IST</small></div>
+    <div class="contact-simple">
+      <div class="contact-item">
+        <div class="contact-item-label">📞 Phone</div>
+        <div class="contact-item-value">+91 99999 99999</div>
+        <div style="font-size: 0.85rem; color: var(--text3); margin-top: 0.3rem;">Mon–Sat, 10am–7pm IST</div>
       </div>
       
-      <div class="content-card">
-        <div class="card-icon">📧</div>
-        <div class="card-title">Email</div>
-        <div class="card-text">hello@buuks.in<br/><small style="color: var(--text3); font-size: 0.8rem;">We reply within 24 hours</small></div>
+      <div class="contact-item">
+        <div class="contact-item-label">📧 Email</div>
+        <div class="contact-item-value">hello@buuks.in</div>
+        <div style="font-size: 0.85rem; color: var(--text3); margin-top: 0.3rem;">We reply within 24 hours</div>
       </div>
       
-      <div class="content-card">
-        <div class="card-icon">📍</div>
-        <div class="card-title">Address</div>
-        <div class="card-text">Kolkata, West Bengal<br/>India — 700001</div>
+      <div class="contact-item">
+        <div class="contact-item-label">📍 Address</div>
+        <div class="contact-item-value">Kolkata, West Bengal<br/>India — 700001</div>
       </div>
     </div>
   </div>
@@ -929,7 +893,7 @@
       </div>
       <div class="foot-contact-item">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span>hello@buuks.in</span>
+        <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d2bab7bebebd92b0a7a7b9a1fcbbbc">[email&#160;protected]</a></span>
       </div>
       <div class="foot-contact-item">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -946,13 +910,4 @@
   <!-- Bottom bar -->
   <div class="foot-bottom">
     <div class="foot-copy">© 2026 <span>buuks.in</span> — All rights reserved. Built with ♥ in India</div>
-    <div class="foot-badges">
-      <span class="foot-badge">📦 Free Delivery ₹499+</span>
-      <span class="foot-badge">💵 Cash on Delivery</span>
-      <span class="foot-badge">🔒 Secure Orders</span>
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
+    <div class="foot-badg
