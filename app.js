@@ -77,31 +77,40 @@ function updateStats() {
   $('topCount').innerHTML=`<strong>${t}</strong> books`;
 }
 
+const GENRE_ICONS = {
+  'Fiction':'📖', 'Non-Fiction':'📰', 'Self-Help':'💡', 'Psychology':'🧠',
+  'Philosophy':'🏛️', 'Science':'🔬', 'History':'🏺', 'Biography':'👤',
+  'Mystery':'🔍', 'Fantasy':'🧙', 'Romance':'💕', 'Horror':'👻',
+  'Poetry':'✍️', 'Children':'🧒', 'Comics':'💬', 'Travel':'✈️',
+  'Cooking':'🍳', 'Art':'🎨', 'Business':'💼', 'Technology':'💻',
+};
+const CHECK_SVG = `<span class="cdd-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></span>`;
+
 function buildFilters() {
   const genres = [...new Set(allBooks.map(b=>b.genre).filter(Boolean))].sort();
   const langs  = [...new Set(allBooks.map(b=>b.language).filter(Boolean))].sort();
 
-  // Build genre dropdown items
   const gMenu = $('dd-genre-menu');
   genres.forEach(g => {
+    const icon = GENRE_ICONS[g] || '📚';
     const el = document.createElement('div');
-    el.className = 'cdd-item'; el.dataset.val = g; el.textContent = g;
+    el.className = 'cdd-item'; el.dataset.val = g;
+    el.innerHTML = `<span class="cdd-genre-icon">${icon}</span>${g}${CHECK_SVG}`;
     gMenu.appendChild(el);
   });
 
-  // Build language dropdown items
   const lMenu = $('dd-lang-menu');
   langs.forEach(l => {
     const el = document.createElement('div');
-    el.className = 'cdd-item'; el.dataset.val = l; el.textContent = l;
+    el.className = 'cdd-item'; el.dataset.val = l;
+    el.innerHTML = `${l}${CHECK_SVG}`;
     lMenu.appendChild(el);
   });
 
-  // Wire up all custom dropdowns
-  setupDropdown('dd-genre',  'dd-genre-label',  'genreFilter', 'All Genres');
-  setupDropdown('dd-lang',   'dd-lang-label',   'langFilter',  'All Languages');
-  setupDropdown('dd-avail',  'dd-avail-label',  'availFilter', 'All Books');
-  setupDropdown('dd-sort',   'dd-sort-label',   'sortSel',     'Title A–Z');
+  setupDropdown('dd-genre',  'dd-genre-label',  'genreFilter', 'Genre');
+  setupDropdown('dd-lang',   'dd-lang-label',   'langFilter',  'Language');
+  setupDropdown('dd-avail',  'dd-avail-label',  'availFilter', 'Availability');
+  setupDropdown('dd-sort',   'dd-sort-label',   'sortSel',     'Sort: A–Z');
 }
 
 function setupDropdown(ddId, labelId, hiddenId, defaultLabel) {
@@ -174,9 +183,9 @@ function px(b){return parseFloat((b.price||'0').replace(/[^\d.]/g,''))||0}
 function drawTags(q,genre,lang,avail){
   const tags=[];
   if(q)     tags.push({l:`"${q}"`,     c:()=>{$('searchInput').value='';applyFilters()}});
-  if(genre) tags.push({l:genre, c:()=>{ $('genreFilter').value=''; resetDD('dd-genre','dd-genre-label','All Genres'); applyFilters(); }});
-  if(lang)  tags.push({l:lang,  c:()=>{ $('langFilter').value='';  resetDD('dd-lang','dd-lang-label','All Languages'); applyFilters(); }});
-  if(avail) tags.push({l:avail==='yes'?'In Stock':'Sold Out', c:()=>{ $('availFilter').value=''; resetDD('dd-avail','dd-avail-label','All Books'); applyFilters(); }});
+  if(genre) tags.push({l:genre, c:()=>{ $('genreFilter').value=''; resetDD('dd-genre','dd-genre-label','Genre'); applyFilters(); }});
+  if(lang)  tags.push({l:lang,  c:()=>{ $('langFilter').value='';  resetDD('dd-lang','dd-lang-label','Language'); applyFilters(); }});
+  if(avail) tags.push({l:avail==='yes'?'In Stock':'Sold Out', c:()=>{ $('availFilter').value=''; resetDD('dd-avail','dd-avail-label','Availability'); applyFilters(); }});
   const wrap=$('atags');
   wrap.innerHTML=tags.map((t,i)=>`<button class="atag" data-i="${i}">${esc(t.l)}<svg width="9" height="9" viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="1.5" y1="1.5" x2="7.5" y2="7.5"/><line x1="7.5" y1="1.5" x2="1.5" y2="7.5"/></svg></button>`).join('');
   wrap.querySelectorAll('.atag').forEach((el,i)=>el.addEventListener('click',tags[i].c));
