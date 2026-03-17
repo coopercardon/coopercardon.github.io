@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Buuks.in — Your Personal Book Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    /* ═══════════════════════════════════════════════════════
+       COMPLETE CSS FOR ABOUT PAGE
+       All styling embedded - no external dependencies
+    ═══════════════════════════════════════════════════════ */
+
+    :root {
+      --white:     #ffffff;
+      --bg:        #f5f6fd;
+      --surface:   #eceef8;
+      --border:    #e0e2f0;
+      --border2:   #c9ccdf;
+      --text:      #1c1d30;
+      --text2:     #52546e;
+      --text3:     #9496b2;
+      --accent:    #6366f1;
+      --accent-h:  #4f52e0;
+      --accent-bg: #eef0ff;
+      --accent-s:  #dde0ff;
+      --green:     #15a05b;
+      --green-bg:  #e8faf2;
+      --red:       #e5495e;
+      --red-bg:    #fff0f2;
+      --amber:     #d97706;
+      --amber-bg:  #fff8ec;
+      --sh-sm: 0 1px 4px rgba(28,29,48,0.07);
+      --sh-md: 0 4px 18px rgba(28,29,48,0.09);
+      --sh-lg: 0 12px 40px rgba(28,29,48,0.13);
+      --r: 12px; --r-sm: 8px; --r-lg: 16px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background-color:var(--bg);background-image:radial-gradient(var(--border2) 1.2px,transparent 1.2px);background-size:26px 26px;color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+    /* ──── ANNOUNCE BAR ──── */
+    .announce-bar{
+      background:var(--text);
+      color:rgba(255,255,255,0.82);
+      font-size:0.78rem;font-weight:500;
+      text-align:center;padding:0.45rem 1rem;
+      display:flex;align-items:center;justify-content:center;
+      gap:1.5rem;flex-wrap:wrap;
+      position:relative;z-index:400;
+    }
+    .announce-bar strong{color:#a5b4fc}
+    .ann-sep{opacity:0.3;font-size:0.65rem}
+    @media(max-width:480px){.ann-sep{display:none}.announce-bar{font-size:0.72rem;gap:0.75rem;padding:0.4rem 0.75rem}}
+
+    /* ──── TOPBAR ──── */
+    .topbar{
+      background-color: var(--white);
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 28px 28px;
+      border-bottom: 1.5px solid var(--border2);
+      position:sticky;top:0;z-index:300;
+      height:60px;
+      display:flex;align-items:center;
+      padding:0 2rem;gap:1.25rem;
+      box-shadow: 0 2px 16px rgba(99,102,241,0.07);
+    }
+    .topbar::before{
+      content:'';position:absolute;inset:0;pointer-events:none;
+      background:
+        linear-gradient(90deg,
+          rgba(255,255,255,0.97) 0%,
+          rgba(255,255,255,0.82) 14%,
+          rgba(255,255,255,0.82) 86%,
+          rgba(255,255,255,0.97) 100%
+        );
+    }
+
+    .logo{display:flex;align-items:center;gap:0.55rem;text-decoration:none;flex-shrink:0;position:relative;z-index:1}
+    .logo-icon{
+      width:32px;height:32px;
+      background:var(--accent);border-radius:8px;
+      display:grid;place-items:center;color:#fff;
+      box-shadow:0 2px 10px rgba(99,102,241,0.3);
+      flex-shrink:0;
+    }
+    .logo-name{font-size:1.22rem;font-weight:800;color:var(--text);letter-spacing:-0.03em}
+    .logo-name span{color:var(--accent)}
+
+    .top-search{flex:1;max-width:380px;position:relative;margin-left:auto;z-index:1}
+    .top-search svg{position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+    .top-search input{
+      width:100%;height:37px;
+      padding:0 0.9rem 0 2.4rem;
+      border:1.5px solid var(--border2);
+      border-radius:9px;background:var(--surface);
+      font-family:'Plus Jakarta Sans',sans-serif;
+      font-size:0.855rem;color:var(--text);
+      outline:none;
+      transition:border-color 0.15s,box-shadow 0.15s,background 0.15s;
+    }
+    .top-search input:focus{
+      border-color:var(--accent);background:var(--white);
+      box-shadow:0 0 0 3px rgba(99,102,241,0.12);
+    }
+    .top-search input::placeholder{color:var(--text3)}
+
+    .topbar-right{display:flex;align-items:center;gap:0.6rem;flex-shrink:0;position:relative;z-index:1}
+    .top-count{
+      font-size:0.77rem;color:var(--text3);
+      background:var(--surface);border:1px solid var(--border);
+      padding:0.25rem 0.75rem;border-radius:20px;white-space:nowrap;
+    }
+    .top-count strong{color:var(--accent);font-weight:700}
+
+    .cart-btn{
+      position:relative;width:38px;height:38px;
+      border:1.5px solid var(--border2);border-radius:10px;
+      background:var(--white);cursor:pointer;
+      display:grid;place-items:center;
+      color:var(--text2);transition:all 0.15s;flex-shrink:0;z-index:1;
+    }
+    .cart-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+    .cart-count{
+      position:absolute;top:-5px;right:-5px;
+      min-width:17px;height:17px;
+      background:var(--red);color:#fff;
+      border-radius:20px;font-size:0.65rem;font-weight:700;
+      display:none;align-items:center;justify-content:center;
+      padding:0 3px;border:2px solid var(--white);
+    }
+
+    @media(max-width:768px){
+      .topbar{padding:0 1rem;height:54px}
+    }
+    @media(max-width:480px){
+      .top-search{max-width:none}
+    }
+
+    /* ──── FOOTER ──── */
+    footer{
+      background:var(--text);
+      color:rgba(255,255,255,0.55);
+      position:relative;overflow:hidden;
+    }
+    .foot-inner{
+      max-width:1200px;margin:0 auto;
+      padding:3rem 2rem 0;
+      display:grid;
+      grid-template-columns:1.4fr 1fr 1fr 1fr;
+      gap:2.5rem;
+    }
+    .foot-logo{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.85rem;text-decoration:none}
+    .foot-logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+    .foot-logo-name{font-size:1.2rem;font-weight:800;color:#fff;letter-spacing:-0.02em}
+    .foot-logo-name span{color:rgba(99,102,241,0.9)}
+    .foot-desc{font-size:0.82rem;line-height:1.65;color:rgba(255,255,255,0.45);max-width:220px}
+    .foot-social{display:flex;gap:0.5rem;margin-top:1.25rem}
+    .foot-social-btn{
+      width:34px;height:34px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.1);
+      background:rgba(255,255,255,0.06);
+      display:grid;place-items:center;
+      color:rgba(255,255,255,0.5);
+      text-decoration:none;
+      transition:all 0.15s;
+    }
+    .foot-social-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+    .foot-col-title{
+      font-size:0.72rem;font-weight:700;
+      letter-spacing:0.09em;text-transform:uppercase;
+      color:rgba(255,255,255,0.35);
+      margin-bottom:1rem;
+    }
+    .foot-links{display:flex;flex-direction:column;gap:0.55rem}
+    .foot-link{
+      font-size:0.83rem;color:rgba(255,255,255,0.5);
+      text-decoration:none;transition:color 0.15s;
+      display:flex;align-items:center;gap:0.4rem;
+    }
+    .foot-link:hover{color:#fff}
+    .foot-link svg{opacity:0.4;flex-shrink:0}
+
+    .foot-contact-item{
+      display:flex;align-items:flex-start;gap:0.6rem;
+      font-size:0.82rem;color:rgba(255,255,255,0.45);
+      margin-bottom:0.6rem;
+      line-height:1.5;
+    }
+    .foot-contact-item svg{flex-shrink:0;margin-top:2px;opacity:0.5}
+
+    .foot-bottom{
+      border-top:1px solid rgba(255,255,255,0.07);
+      margin-top:2.5rem;
+      padding:1.1rem 2rem;
+      display:flex;align-items:center;justify-content:space-between;
+      flex-wrap:wrap;gap:0.75rem;
+      max-width:1200px;margin-inline:auto;
+    }
+    .foot-copy{font-size:0.76rem;color:rgba(255,255,255,0.3)}
+    .foot-copy span{color:rgba(99,102,241,0.7);font-weight:600}
+    .foot-badges{display:flex;gap:0.5rem;flex-wrap:wrap}
+    .foot-badge{
+      font-size:0.68rem;font-weight:600;letter-spacing:0.05em;
+      padding:0.22rem 0.65rem;border-radius:20px;
+      border:1px solid rgba(255,255,255,0.1);
+      color:rgba(255,255,255,0.35);
+    }
+    footer::before{
+      content:'';position:absolute;
+      bottom:-80px;left:50%;transform:translateX(-50%);
+      width:600px;height:300px;
+      background:radial-gradient(ellipse,rgba(99,102,241,0.12),transparent 70%);
+      pointer-events:none;
+    }
+
+    @media(max-width:768px){
+      .foot-inner{grid-template-columns:1fr 1fr;gap:2rem;padding:2rem 1.25rem 0}
+      .foot-desc{max-width:100%}
+      .foot-bottom{padding:1rem 1.25rem;flex-direction:column;align-items:flex-start;gap:0.6rem}
+    }
+    @media(max-width:480px){
+      .foot-inner{grid-template-columns:1fr;gap:1.5rem}
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       ABOUT PAGE SPECIFIC STYLES
+    ═══════════════════════════════════════════════════════ */
+
+    .about-hero {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 4.5rem 1.5rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle 350px at 15% 35%, rgba(99,102,241,0.08), transparent),
+        radial-gradient(circle 250px at 85% 45%, rgba(139,92,246,0.07), transparent),
+        radial-gradient(circle 200px at 50% 100%, rgba(99,102,241,0.06), transparent);
+    }
+    
+    .about-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 0.8rem;
+    }
+    
+    .about-hero h1 .accent {
+      color: var(--accent);
+    }
+    
+    .about-hero .subtext {
+      font-size: 1.05rem;
+      color: var(--text2);
+      max-width: 520px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Content sections */
+    .about-section {
+      background: var(--white);
+      padding: 3.5rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .section-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--accent-bg);
+      color: var(--accent);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid var(--accent-s);
+      margin-bottom: 1rem;
+    }
+    
+    .section-badge span {
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+    }
+    
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    
+    .section-title .accent {
+      color: var(--accent);
+    }
+    
+    /* Grid of content cards */
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .content-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.3s;
+    }
+    
+    .content-card:hover {
+      box-shadow: var(--sh-lg);
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+    
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-bg);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    
+    .card-text {
+      font-size: 0.95rem;
+      color: var(--text2);
+      line-height: 1.65;
+    }
+    
+    /* Two-column layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    
+    .two-col-text h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+    
+    .two-col-text p {
+      font-size: 0.98rem;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    
+    .two-col-text p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .two-col-visual {
+      background: linear-gradient(135deg, var(--accent-bg), #e5e7ff);
+      border-radius: var(--r-lg);
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      min-height: 300px;
+      border: 1px solid var(--accent-s);
+    }
+    
+    .visual-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(99,102,241,0.15);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 2.5rem;
+    }
+    
+    .visual-text {
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+    
+    /* Stats row */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .stat-box {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.75rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .stat-box:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-bg);
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+    
+    /* CTA section */
+    .about-cta {
+      background: linear-gradient(135deg, var(--accent) 0%, #4f52e0 100%);
+      padding: 3rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .cta-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .cta-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.8rem;
+      letter-spacing: -0.02em;
+    }
+    
+    .cta-text {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      height: 48px;
+      padding: 0 2rem;
+      background: rgba(255,255,255,0.95);
+      color: var(--accent);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    
+    .cta-button:hover {
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(28,29,48,0.2);
+    }
+    
+    /* Timeline-like section */
+    .journey-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .timeline-year {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+    }
+    
+    .timeline-content h4 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    
+    .timeline-content p {
+      font-size: 0.95rem;
+      color: var(--text2);
+      line-height: 1.65;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .about-section {
+        padding: 2.5rem 1rem;
+      }
+      
+      .section-title {
+        font-size: 1.7rem;
+      }
+      
+      .about-hero {
+        padding: 3rem 1rem 2.2rem;
+        min-height: 320px;
+      }
+      
+      .two-col {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .two-col-visual {
+        min-height: 250px;
+      }
+      
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .timeline-year {
+        font-size: 1.8rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .about-hero h1 {
+        font-size: 1.6rem;
+      }
+      
+      .about-hero .subtext {
+        font-size: 0.95rem;
+      }
+      
+      .section-title {
+        font-size: 1.4rem;
+      }
+      
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ ANNOUNCE BAR ══ -->
+<div class="announce-bar">
+  <span>🚚 Free delivery on orders above <strong>₹499</strong></span>
+  <span class="ann-sep">•</span>
+  <span>💵 Cash on Delivery available</span>
+  <span class="ann-sep">•</span>
+  <span>📦 Delivered in <strong>3–5 days</strong></span>
+</div>
+
+<!-- ══ TOPBAR ══ -->
+<header class="topbar">
+  <a class="logo" href="../index.html">
+    <div class="logo-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    </div>
+    <span class="logo-name">buuks<span>.in</span></span>
+  </a>
+  <div class="top-search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" placeholder="Search title, author, ISBN…" disabled style="cursor:not-allowed;opacity:0.5"/>
+  </div>
+  <div class="topbar-right">
+    <div class="top-count"><strong>All</strong> Books</div>
+    <button class="cart-btn" title="View Cart" style="cursor:not-allowed;opacity:0.5">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <div class="cart-count">0</div>
+    </button>
+  </div>
+</header>
+
+<!-- ══ ABOUT HERO ══ -->
+<section class="about-hero">
+  <h1>About <span class="accent">Buuks.in</span></h1>
+  <p class="subtext">We believe every reader deserves a personal book store. Our mission is to make discovering, browsing, and ordering books simple, delightful, and accessible.</p>
+</section>
+
+<!-- ══ OUR STORY ══ -->
+<section class="about-section">
+  <div class="section-container">
+    <div class="section-badge"><span></span>Our Story</div>
+    <h2 class="section-title">Building India's Favourite <span class="accent">Book Store</span></h2>
+    
+    <div class="two-col">
+      <div class="two-col-text">
+        <h3>A Love for Books, A Vision for Change</h3>
+        <p>Buuks.in was born from a simple observation: finding the right book should be easy. Too many readers waste hours searching across platforms, facing outdated inventory, unclear delivery, or confusing pricing.</p>
+        <p>We set out to change that. In 2024, we launched Buuks.in as India's personal book store — a handpicked library where every title is curated with care, every purchase is frictionless, and every reader feels valued.</p>
+        <p>Today, we're proud to serve thousands of readers across India, from busy professionals to book clubs to passionate students. Our library continues to grow, and our commitment to making reading accessible never wavers.</p>
+      </div>
+      <div class="two-col-visual">
+        <div class="visual-icon">📚</div>
+        <div class="visual-text">
+          "Every book has a story. We're here to help you find yours."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHY BUUKS.IN ══ -->
+<section class="about-section">
+  <div class="section-container">
+    <div class="section-badge"><span></span>Why Us</div>
+    <h2 class="section-title">What Makes Us <span class="accent">Different</span></h2>
+    
+    <div class="content-grid">
+      <div class="content-card">
+        <div class="card-icon">✨</div>
+        <div class="card-title">Handpicked Library</div>
+        <div class="card-text">Every book in our catalog is carefully selected. No junk. No clutter. Just quality reads across all genres.</div>
+      </div>
+      
+      <div class="content-card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Frictionless Ordering</div>
+        <div class="card-text">Add to cart, fill a simple form, and done. No endless pages, no account creation. Simplicity at every step.</div>
+      </div>
+      
+      <div class="content-card">
+        <div class="card-icon">🚚</div>
+        <div class="card-title">Fast & Reliable</div>
+        <div class="card-text">Delivered to your door in 3–5 days. Cash on Delivery. Free shipping above ₹499. No surprises.</div>
+      </div>
+      
+      <div class="content-card">
+        <div class="card-icon">💬</div>
+        <div class="card-title">Real Support</div>
+        <div class="card-text">Mon–Sat, 10am–7pm IST. Real people answering your questions. No bots. No waiting.</div>
+      </div>
+      
+      <div class="content-card">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">Reader-First Design</div>
+        <div class="card-text">Built by readers, for readers. Every feature exists to make your book journey smoother.</div>
+      </div>
+      
+      <div class="content-card">
+        <div class="card-icon">🌱</div>
+        <div class="card-title">Supporting Indies</div>
+        <div class="card-text">We celebrate independent publishers and authors. Growing the reading ecosystem, together.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ OUR VALUES ══ -->
+<section class="about-section">
+  <div class="section-container">
+    <div class="section-badge"><span></span>Core Values</div>
+    <h2 class="section-title">What We Stand <span class="accent">For</span></h2>
+    
+    <div class="journey-timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">📖</div>
+        <div class="timeline-content">
+          <h4>Reader First</h4>
+          <p>Every decision we make is guided by what's best for readers. Your time, your trust, and your love for books matter most to us.</p>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-year">🎨</div>
+        <div class="timeline-content">
+          <h4>Curation Over Quantity</h4>
+          <p>We don't believe in overwhelming you with thousands of choices. Quality over quantity. Every book in our store has earned its place.</p>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-year">🤝</div>
+        <div class="timeline-content">
+          <h4>Community Matters</h4>
+          <p>We're building a community of readers. Book clubs, recommendations, shared love of stories — you're not just a customer, you're part of our family.</p>
+        </div>
+      </div>
+      
+      <div class="timeline-item">
+        <div class="timeline-year">🌍</div>
+        <div class="timeline-content">
+          <h4>Supporting India's Reading Culture</h4>
+          <p>We believe in making books accessible to every Indian reader. We partner with local publishers, celebrate Indian authors, and grow the reading ecosystem.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS ══ -->
+<section class="about-section">
+  <div class="section-container">
+    <h2 class="section-title" style="text-align: center; margin-bottom: 2.5rem;">By The Numbers</h2>
+    
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-number">2.5K+</div>
+        <div class="stat-label">Books in Library</div>
+      </div>
+      
+      <div class="stat-box">
+        <div class="stat-number">45+</div>
+        <div class="stat-label">Genres & Categories</div>
+      </div>
+      
+      <div class="stat-box">
+        <div class="stat-number">8K+</div>
+        <div class="stat-label">Happy Readers</div>
+      </div>
+      
+      <div class="stat-box">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Handpicked Quality</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA SECTION ══ -->
+<section class="about-cta">
+  <div class="cta-container">
+    <h2 class="cta-title">Ready to Find Your Next Favourite Book?</h2>
+    <p class="cta-text">Explore our handpicked library of 2,500+ books. Browse, discover, and order with a single click.</p>
+    <a href="../index.html" class="cta-button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      Start Browsing
+    </a>
+  </div>
+</section>
+
+<!-- ══ CONTACT SECTION ══ -->
+<section class="about-section">
+  <div class="section-container">
+    <div class="section-badge"><span></span>Get In Touch</div>
+    <h2 class="section-title">Questions? We'd <span class="accent">Love to Help</span></h2>
+    
+    <div class="content-grid">
+      <div class="content-card">
+        <div class="card-icon">📞</div>
+        <div class="card-title">Phone</div>
+        <div class="card-text">+91 99999 99999<br/><small style="color: var(--text3); font-size: 0.8rem;">Mon–Sat, 10am–7pm IST</small></div>
+      </div>
+      
+      <div class="content-card">
+        <div class="card-icon">📧</div>
+        <div class="card-title">Email</div>
+        <div class="card-text">hello@buuks.in<br/><small style="color: var(--text3); font-size: 0.8rem;">We reply within 24 hours</small></div>
+      </div>
+      
+      <div class="content-card">
+        <div class="card-icon">📍</div>
+        <div class="card-title">Address</div>
+        <div class="card-text">Kolkata, West Bengal<br/>India — 700001</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="foot-inner">
+
+    <!-- Brand col -->
+    <div class="foot-brand-col">
+      <a class="foot-logo" href="../index.html">
+        <div class="foot-logo-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <span class="foot-logo-name">buuks<span>.in</span></span>
+      </a>
+      <p class="foot-desc">Your personal online book store. Discover, browse and order from a handpicked library — delivered to your door.</p>
+      <div class="foot-social">
+        <a href="#" class="foot-social-btn" title="Instagram">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="#" class="foot-social-btn" title="WhatsApp">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        </a>
+        <a href="#" class="foot-social-btn" title="Facebook">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div>
+      <div class="foot-col-title">Quick Links</div>
+      <div class="foot-links">
+        <a href="../index.html" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Browse All Books
+        </a>
+        <a href="../index.html" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          New Arrivals
+        </a>
+        <a href="../index.html" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Best Sellers
+        </a>
+        <a href="../index.html" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Fiction
+        </a>
+        <a href="../index.html" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Non-Fiction
+        </a>
+        <a href="../index.html" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Self-Help
+        </a>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div>
+      <div class="foot-col-title">Information</div>
+      <div class="foot-links">
+        <a href="about.html" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          About Us
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          How to Order
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Delivery Info
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Returns Policy
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Privacy Policy
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Terms of Service
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div>
+      <div class="foot-col-title">Contact Us</div>
+      <div class="foot-contact-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
+        <span>+91 99999 99999</span>
+      </div>
+      <div class="foot-contact-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>hello@buuks.in</span>
+      </div>
+      <div class="foot-contact-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Kolkata, West Bengal<br/>India — 700001</span>
+      </div>
+      <div class="foot-contact-item" style="margin-top:0.75rem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Mon–Sat, 10am – 7pm IST</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="foot-bottom">
+    <div class="foot-copy">© 2026 <span>buuks.in</span> — All rights reserved. Built with ♥ in India</div>
+    <div class="foot-badges">
+      <span class="foot-badge">📦 Free Delivery ₹499+</span>
+      <span class="foot-badge">💵 Cash on Delivery</span>
+      <span class="foot-badge">🔒 Secure Orders</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
