@@ -437,7 +437,7 @@ function closeUPIModal() {
 function confirmUPIPaymentWithAnimation(orderId, amount, name, phone, email, address) {
   console.log('✅ Payment confirmed with animation:', orderId);
   
-  // Show loading state
+  // Show loading state in button
   const doneBtn = document.getElementById('paymentDoneBtn');
   if (doneBtn) {
     doneBtn.disabled = true;
@@ -452,9 +452,156 @@ function confirmUPIPaymentWithAnimation(orderId, amount, name, phone, email, add
   setTimeout(() => {
     closeUPIModal();
     
+    // Show processing overlay
+    showProcessingOverlay(orderId);
+    
     // Process payment
     processUPIPayment(orderId, amount, name, phone, email, address);
   }, 800);
+}
+
+// ════════════════════════════════════════════════════════════
+// Processing Overlay (Buffer between modal close & success)
+// ════════════════════════════════════════════════════════════
+
+function showProcessingOverlay(orderId) {
+  console.log('⏳ Showing processing overlay...');
+  
+  const overlayHTML = `
+    <div id="processingOverlay" style="
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 29, 48, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1500;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.3s ease-out;
+    ">
+      <div style="
+        text-align: center;
+        color: white;
+      ">
+        <!-- Animated Spinner -->
+        <div style="
+          width: 80px;
+          height: 80px;
+          margin: 0 auto 2rem;
+          position: relative;
+        ">
+          <!-- Outer rotating ring -->
+          <div style="
+            position: absolute;
+            inset: 0;
+            border: 4px solid rgba(16, 185, 129, 0.2);
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          "></div>
+          
+          <!-- Inner pulsing circle -->
+          <div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+          "></div>
+        </div>
+
+        <!-- Processing Text -->
+        <h2 style="
+          font-size: 1.4rem;
+          font-weight: 800;
+          margin: 0 0 0.75rem 0;
+          letter-spacing: -0.02em;
+        ">Confirming Order</h2>
+        
+        <p style="
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.7);
+          margin: 0;
+          line-height: 1.6;
+          max-width: 280px;
+          margin: 0 auto;
+        ">
+          Please wait while we verify your payment and confirm your order...
+        </p>
+
+        <!-- Order ID -->
+        <div style="
+          margin-top: 1.5rem;
+          padding: 0.75rem 1.25rem;
+          background: rgba(16, 185, 129, 0.15);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: 10px;
+          font-family: monospace;
+          font-size: 0.8rem;
+          color: #10b981;
+          letter-spacing: 0.05em;
+          font-weight: 600;
+        ">
+          Order #${orderId}
+        </div>
+      </div>
+
+      <style>
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+          }
+          50% {
+            opacity: 0.5;
+            transform: translate(-50%, -50%) scale(0.85);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      </style>
+    </div>
+  `;
+
+  // Remove any existing overlay
+  const existing = document.getElementById('processingOverlay');
+  if (existing) existing.remove();
+
+  // Add processing overlay
+  document.body.insertAdjacentHTML('beforeend', overlayHTML);
+  document.body.style.overflow = 'hidden';
+  console.log('✅ Processing overlay shown');
+}
+
+function closeProcessingOverlay() {
+  console.log('✅ Closing processing overlay');
+  const overlay = document.getElementById('processingOverlay');
+  if (overlay) {
+    overlay.style.animation = 'fadeIn 0.3s ease-out reverse';
+    setTimeout(() => {
+      overlay.remove();
+    }, 300);
+  }
 }
 
 function processUPIPayment(orderId, amount, name, phone, email, address) {
@@ -521,13 +668,19 @@ function completePaymentFlow(orderId) {
     renderBooks();
   }
 
-  // Show success screen with animation
+  // Wait a moment, then close processing overlay and show success
   setTimeout(() => {
-    if (typeof showSuccessScreen === 'function') {
-      showSuccessScreen(orderId, false);
-    }
-    console.log('✅ Success screen displayed!');
-  }, 300);
+    // Close processing overlay
+    closeProcessingOverlay();
+    
+    // Brief pause before success screen
+    setTimeout(() => {
+      if (typeof showSuccessScreen === 'function') {
+        showSuccessScreen(orderId, false);
+      }
+      console.log('✅ Success screen displayed!');
+    }, 400);
+  }, 1500);
 }
 
 console.log('✅ UPI Payment Script fully loaded and ready');
