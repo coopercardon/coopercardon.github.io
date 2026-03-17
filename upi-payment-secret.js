@@ -604,6 +604,405 @@ function closeProcessingOverlay() {
   }
 }
 
+// ════════════════════════════════════════════════════════════
+// Payment Verification Popup
+// ════════════════════════════════════════════════════════════
+
+function showPaymentVerificationPopup(orderId) {
+  console.log('🔍 Showing payment verification popup...');
+  
+  const popupHTML = `
+    <div id="paymentVerificationModal" style="
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 29, 48, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2100;
+      padding: 1rem;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.3s ease-out;
+    ">
+      <div style="
+        background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+        border-radius: 24px;
+        padding: 2.5rem;
+        max-width: 460px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(28, 29, 48, 0.15), 0 0 1px rgba(28, 29, 48, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+        animation: modalSlideUp 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+      ">
+        <!-- Header -->
+        <div style="margin-bottom: 1.75rem;">
+          <div style="
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ecfdf5 0%, #dcfce7 100%);
+            border-radius: 18px;
+            margin: 0 auto 1.25rem;
+            border: 2px solid #10b981;
+            font-size: 2rem;
+          ">❓</div>
+          <h2 style="font-size: 1.6rem; font-weight: 800; color: #1c1d30; margin: 0; letter-spacing: -0.02em;">Verify Payment</h2>
+          <p style="font-size: 0.9rem; color: #9496b2; margin-top: 0.75rem; margin-bottom: 0; line-height: 1.6;">
+            Did you successfully send the payment of <span style="font-weight: 700; color: #10b981;">₹${getCartTotal()}</span>?
+          </p>
+        </div>
+
+        <!-- Payment Status Info -->
+        <div style="
+          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+          border: 1.5px solid #10b981;
+          border-radius: 14px;
+          padding: 1rem;
+          margin-bottom: 2rem;
+        ">
+          <p style="
+            font-size: 0.85rem;
+            color: #059669;
+            margin: 0;
+            line-height: 1.6;
+            font-weight: 600;
+          ">
+            ✓ Payment sent from your Google Pay / PhonePe app?
+          </p>
+          <p style="
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0.75rem 0 0 0;
+            line-height: 1.5;
+          ">
+            Order #${orderId} · Check your UPI app for payment confirmation
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <!-- Payment Sent Button -->
+          <button onclick="confirmPaymentSuccess('${orderId}')" style="
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            letter-spacing: -0.01em;
+          " onmouseover="
+            this.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.35)';
+          " onmouseout="
+            this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+          ">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-right: 0.5rem; vertical-align: middle;">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Yes, Payment Sent ✓
+          </button>
+
+          <!-- Payment Failed Button -->
+          <button onclick="showPaymentFailedPopup('${orderId}')" style="
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border: 1.5px solid #fca5a5;
+            border-radius: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: -0.01em;
+          " onmouseover="
+            this.style.background = 'linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)';
+            this.style.transform = 'translateY(-2px)';
+          " onmouseout="
+            this.style.background = 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)';
+            this.style.transform = 'translateY(0)';
+          ">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-right: 0.5rem; vertical-align: middle;">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            No, Payment Failed
+          </button>
+        </div>
+
+        <!-- Info -->
+        <p style="font-size: 0.74rem; color: #9496b2; margin-top: 1.5rem; margin-bottom: 0; line-height: 1.6;">
+          💡 Once you confirm payment, your order will be marked as verified in our system.
+        </p>
+      </div>
+
+      <style>
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes modalSlideUp {
+          from {
+            opacity: 0;
+            transform: translateY(24px) scale(0.96);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+      </style>
+    </div>
+  `;
+
+  // Remove existing modal
+  const existing = document.getElementById('paymentVerificationModal');
+  if (existing) existing.remove();
+
+  // Add new modal
+  document.body.insertAdjacentHTML('beforeend', popupHTML);
+  document.body.style.overflow = 'hidden';
+  console.log('✅ Verification popup displayed');
+}
+
+function confirmPaymentSuccess(orderId) {
+  console.log('✅ Payment verified as successful:', orderId);
+  closePaymentVerificationPopup();
+  
+  // Show success screen
+  setTimeout(() => {
+    if (typeof showSuccessScreen === 'function') {
+      showSuccessScreen(orderId, false);
+    }
+    console.log('✅ Success screen displayed!');
+  }, 300);
+}
+
+function showPaymentFailedPopup(orderId) {
+  console.log('❌ Payment marked as failed:', orderId);
+  closePaymentVerificationPopup();
+
+  // Show failed popup
+  setTimeout(() => {
+    const failedHTML = `
+      <div id="paymentFailedModal" style="
+        position: fixed;
+        inset: 0;
+        background: rgba(28, 29, 48, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2100;
+        padding: 1rem;
+        backdrop-filter: blur(8px);
+        animation: fadeIn 0.3s ease-out;
+      ">
+        <div style="
+          background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+          border-radius: 24px;
+          padding: 2.5rem;
+          max-width: 460px;
+          width: 100%;
+          text-align: center;
+          box-shadow: 0 20px 60px rgba(28, 29, 48, 0.15), 0 0 1px rgba(28, 29, 48, 0.1);
+          border: 1px solid rgba(220, 38, 38, 0.1);
+          animation: modalSlideUp 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+        ">
+          <!-- Header -->
+          <div style="margin-bottom: 1.75rem;">
+            <div style="
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 70px;
+              height: 70px;
+              background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+              border-radius: 18px;
+              margin: 0 auto 1.25rem;
+              border: 2px solid #dc2626;
+              font-size: 2rem;
+            ">⚠️</div>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: #1c1d30; margin: 0; letter-spacing: -0.02em;">Payment Not Sent</h2>
+            <p style="font-size: 0.9rem; color: #9496b2; margin-top: 0.75rem; margin-bottom: 0; line-height: 1.6;">
+              We didn't receive your payment confirmation. What would you like to do?
+            </p>
+          </div>
+
+          <!-- Options -->
+          <div style="
+            background: linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%);
+            border: 1.5px solid #fecaca;
+            border-radius: 14px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+          ">
+            <p style="
+              font-size: 0.85rem;
+              color: #991b1b;
+              margin: 0;
+              line-height: 1.6;
+              font-weight: 600;
+            ">
+              Order #${orderId}
+            </p>
+            <p style="
+              font-size: 0.75rem;
+              color: #6b7280;
+              margin: 0.75rem 0 0 0;
+              line-height: 1.5;
+            ">
+              You can try again or use Cash on Delivery instead.
+            </p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Retry Button -->
+            <button onclick="retryUPIPayment('${orderId}')" style="
+              width: 100%;
+              padding: 15px;
+              background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+              color: white;
+              border: none;
+              border-radius: 12px;
+              font-family: 'Plus Jakarta Sans', sans-serif;
+              font-size: 0.95rem;
+              font-weight: 700;
+              cursor: pointer;
+              transition: all 0.2s;
+              box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+              letter-spacing: -0.01em;
+            " onmouseover="
+              this.style.background = 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)';
+              this.style.transform = 'translateY(-2px)';
+              this.style.boxShadow = '0 8px 20px rgba(249, 115, 22, 0.35)';
+            " onmouseout="
+              this.style.background = 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)';
+              this.style.transform = 'translateY(0)';
+              this.style.boxShadow = '0 4px 12px rgba(249, 115, 22, 0.3)';
+            ">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; margin-right: 0.5rem; vertical-align: middle;">
+                <path d="M21 2v6h-6"></path>
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6"></path>
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+              </svg>
+              Try UPI Payment Again
+            </button>
+
+            <!-- Use COD Button -->
+            <button onclick="closePaymentFailedPopup()" style="
+              width: 100%;
+              padding: 15px;
+              background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+              color: #6b7280;
+              border: 1.5px solid #d1d5db;
+              border-radius: 12px;
+              font-family: 'Plus Jakarta Sans', sans-serif;
+              font-size: 0.95rem;
+              font-weight: 700;
+              cursor: pointer;
+              transition: all 0.2s;
+              letter-spacing: -0.01em;
+            " onmouseover="
+              this.style.background = 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)';
+              this.style.transform = 'translateY(-2px)';
+            " onmouseout="
+              this.style.background = 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)';
+              this.style.transform = 'translateY(0)';
+            ">
+              Use Cash on Delivery Instead
+            </button>
+          </div>
+
+          <!-- Info -->
+          <p style="font-size: 0.74rem; color: #9496b2; margin-top: 1.5rem; margin-bottom: 0; line-height: 1.6;">
+            💡 If you already sent the payment, click "Try UPI Payment Again" to verify.
+          </p>
+        </div>
+
+        <style>
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes modalSlideUp {
+            from {
+              opacity: 0;
+              transform: translateY(24px) scale(0.96);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+        </style>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', failedHTML);
+  }, 300);
+}
+
+function retryUPIPayment(orderId) {
+  console.log('🔄 Retrying UPI payment for:', orderId);
+  closePaymentFailedPopup();
+  
+  // Show verification popup again
+  setTimeout(() => {
+    showPaymentVerificationPopup(orderId);
+  }, 300);
+}
+
+function closePaymentVerificationPopup() {
+  console.log('❌ Verification popup closed');
+  const modal = document.getElementById('paymentVerificationModal');
+  if (modal) {
+    modal.style.animation = 'fadeIn 0.25s ease-out reverse';
+    setTimeout(() => {
+      modal.remove();
+    }, 250);
+  }
+  document.body.style.overflow = '';
+}
+
+function closePaymentFailedPopup() {
+  console.log('❌ Failed popup closed');
+  const modal = document.getElementById('paymentFailedModal');
+  if (modal) {
+    modal.style.animation = 'fadeIn 0.25s ease-out reverse';
+    setTimeout(() => {
+      modal.remove();
+    }, 250);
+  }
+  document.body.style.overflow = '';
+  
+  // User selected COD, reload to go back
+  setTimeout(() => {
+    location.reload();
+  }, 300);
+}
+
+function getCartTotal() {
+  if (typeof cart === 'undefined') return 0;
+  const items = Object.values(cart);
+  const subAmt = items.reduce((s, i) => s + parseFloat((i.book.price || '0').replace(/[^\d.]/g, '')) * i.qty, 0);
+  const delAmt = subAmt >= 499 ? 0 : 50;
+  return subAmt + delAmt;
+}
+
 function processUPIPayment(orderId, amount, name, phone, email, address) {
   console.log('💳 Processing UPI payment...');
 
@@ -668,17 +1067,14 @@ function completePaymentFlow(orderId) {
     renderBooks();
   }
 
-  // Wait a moment, then close processing overlay and show success
+  // Wait a moment, then close processing overlay and show verification
   setTimeout(() => {
     // Close processing overlay
     closeProcessingOverlay();
     
-    // Brief pause before success screen
+    // Brief pause before verification popup
     setTimeout(() => {
-      if (typeof showSuccessScreen === 'function') {
-        showSuccessScreen(orderId, false);
-      }
-      console.log('✅ Success screen displayed!');
+      showPaymentVerificationPopup(orderId);
     }, 400);
   }, 1500);
 }
