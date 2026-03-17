@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buuks.in — Discover Your Next Read</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══ -->
+<header class="topbar">
+  <a class="logo" href="#" id="logoHome">
+    <div class="logo-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    </div>
+    <span class="logo-name">buuks<span>.in</span></span>
+  </a>
+  <div class="top-search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" id="searchInput" placeholder="Search title, author, ISBN…"/>
+  </div>
+  <div class="topbar-right">
+    <div class="top-count" id="topCount">Loading…</div>
+    <button class="cart-btn" id="cartBtn" title="View Cart">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <div class="cart-count" id="cartCount">0</div>
+    </button>
+  </div>
+</header>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+
+  <!-- floating literary elements -->
+  <div class="hero-floats">
+
+    <!-- open book top-left -->
+    <svg class="hf" style="width:90px" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 10 C30 8 10 12 5 15 L5 52 C10 49 30 45 40 48 C50 45 70 49 75 52 L75 15 C70 12 50 8 40 10Z" fill="#6366f1"/>
+      <line x1="40" y1="10" x2="40" y2="48" stroke="white" stroke-width="1.5" opacity="0.6"/>
+      <line x1="15" y1="22" x2="37" y2="21" stroke="white" stroke-width="1" opacity="0.4"/>
+      <line x1="14" y1="28" x2="37" y2="27" stroke="white" stroke-width="1" opacity="0.4"/>
+      <line x1="14" y1="34" x2="37" y2="33" stroke="white" stroke-width="1" opacity="0.4"/>
+      <line x1="43" y1="22" x2="65" y2="21" stroke="white" stroke-width="1" opacity="0.4"/>
+      <line x1="43" y1="28" x2="65" y2="27" stroke="white" stroke-width="1" opacity="0.4"/>
+      <line x1="43" y1="34" x2="65" y2="33" stroke="white" stroke-width="1" opacity="0.4"/>
+    </svg>
+
+    <!-- quill / feather top-right -->
+    <svg class="hf" style="width:60px" viewBox="0 0 50 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M25 5 C40 10 48 30 45 55 C42 70 30 75 25 75 C20 75 18 65 20 55 L25 5Z" fill="#6366f1"/>
+      <path d="M25 75 L22 55 C20 42 15 30 8 20" stroke="#4f46e5" stroke-width="1.5" fill="none"/>
+      <path d="M25 5 C15 15 10 35 12 50" stroke="white" stroke-width="1" opacity="0.5" fill="none"/>
+    </svg>
+
+    <!-- small open book bottom-left -->
+    <svg class="hf" style="width:65px" viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 10 C30 8 10 12 5 15 L5 52 C10 49 30 45 40 48 C50 45 70 49 75 52 L75 15 C70 12 50 8 40 10Z" fill="#818cf8"/>
+      <line x1="40" y1="10" x2="40" y2="48" stroke="white" stroke-width="1.5" opacity="0.6"/>
+      <line x1="14" y1="25" x2="37" y2="24" stroke="white" stroke-width="1" opacity="0.35"/>
+      <line x1="14" y1="31" x2="37" y2="30" stroke="white" stroke-width="1" opacity="0.35"/>
+      <line x1="43" y1="25" x2="65" y2="24" stroke="white" stroke-width="1" opacity="0.35"/>
+      <line x1="43" y1="31" x2="65" y2="30" stroke="white" stroke-width="1" opacity="0.35"/>
+    </svg>
+
+    <!-- sparkle star bottom-right -->
+    <svg class="hf" style="width:44px" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 2 L22.5 17.5 L38 20 L22.5 22.5 L20 38 L17.5 22.5 L2 20 L17.5 17.5 Z" fill="#6366f1"/>
+    </svg>
+
+    <!-- reading glasses mid-left -->
+    <svg class="hf" style="width:70px" viewBox="0 0 80 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22" cy="18" r="13" stroke="#6366f1" stroke-width="3" fill="none"/>
+      <circle cx="58" cy="18" r="13" stroke="#6366f1" stroke-width="3" fill="none"/>
+      <line x1="35" y1="18" x2="45" y2="18" stroke="#6366f1" stroke-width="3"/>
+      <line x1="2" y1="12" x2="9" y2="15" stroke="#6366f1" stroke-width="2.5"/>
+      <line x1="71" y1="12" x2="78" y2="15" stroke="#6366f1" stroke-width="2.5"/>
+    </svg>
+
+    <!-- small sparkle top-right area -->
+    <svg class="hf" style="width:28px" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 1 L15.8 12.2 L27 14 L15.8 15.8 L14 27 L12.2 15.8 L1 14 L12.2 12.2 Z" fill="#a5b4fc"/>
+    </svg>
+
+    <!-- ink dots scattered -->
+    <div class="hf-dot" style="width:8px;height:8px;top:20%;left:22%;"></div>
+    <div class="hf-dot" style="width:5px;height:5px;top:70%;left:30%;"></div>
+    <div class="hf-dot" style="width:6px;height:6px;top:35%;right:22%;"></div>
+    <div class="hf-dot" style="width:4px;height:4px;top:65%;right:28%;"></div>
+    <div class="hf-dot" style="width:7px;height:7px;top:55%;left:16%;"></div>
+    <div class="hf-dot" style="width:5px;height:5px;top:25%;right:35%;"></div>
+  </div>
+
+  <div class="hero-badge"><span></span>Your Personal Book Store</div>
+  <h1>Find Your Next<br/><b>Favourite Book</b></h1>
+  <p class="hero-sub">Browse our handpicked library, discover new reads, and order with a single tap.</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n" id="statTotal">—</div><div class="hstat-l">Books</div></div>
+    <div class="hstat"><div class="hstat-n" id="statGenres">—</div><div class="hstat-l">Genres</div></div>
+    <div class="hstat"><div class="hstat-n" id="statAvail">—</div><div class="hstat-l">In Stock</div></div>
+  </div>
+</section>
+
+<!-- ══ SETUP NOTICE ══ -->
+<div class="setup-notice" id="setupNotice">
+  <h4>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Connect your Google Sheet to go live
+  </h4>
+  <p>Open this file in a text editor, find <strong>CONFIG ZONE</strong> and fill in your 4 values.</p>
+  <p>Currently showing <strong>demo data</strong>.</p>
+</div>
+
+<!-- ══ FILTER BAR ══ -->
+<div class="filter-bar" id="filterBar">
+  <select id="genreFilter" class="fchip"><option value="">All Genres</option></select>
+  <select id="langFilter"  class="fchip"><option value="">All Languages</option></select>
+  <select id="availFilter" class="fchip">
+    <option value="">All Books</option>
+    <option value="yes">In Stock</option>
+    <option value="no">Sold Out</option>
+  </select>
+  <div class="fdivider"></div>
+  <div class="view-tog">
+    <button class="vbtn on" id="gridBtn" title="Grid">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="5" height="5" rx="1.2"/><rect x="7" y="0" width="5" height="5" rx="1.2"/><rect x="0" y="7" width="5" height="5" rx="1.2"/><rect x="7" y="7" width="5" height="5" rx="1.2"/></svg>
+    </button>
+    <button class="vbtn" id="listBtn" title="List">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="0" y="0" width="12" height="2.2" rx="1.1"/><rect x="0" y="4.9" width="12" height="2.2" rx="1.1"/><rect x="0" y="9.8" width="12" height="2.2" rx="1.1"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="atags" id="atags"></div>
+
+<div class="results-row">
+  <div class="rtext" id="rtext"></div>
+  <div class="sort-row">
+    <span class="sort-lbl">Sort</span>
+    <select id="sortSel" class="sort-sel">
+      <option value="title">Title A–Z</option>
+      <option value="author">Author A–Z</option>
+      <option value="year_desc">Newest First</option>
+      <option value="year_asc">Oldest First</option>
+      <option value="price_asc">Price ↑</option>
+      <option value="price_desc">Price ↓</option>
+    </select>
+  </div>
+</div>
+
+<main id="catalog">
+  <div class="statebox"><div class="spinner"></div><p>Loading library…</p></div>
+</main>
+
+<button class="mob-filter-btn" id="mobFilterBtn">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+  Filters
+</button>
+
+<!-- ══ PRODUCT DETAIL OVERLAY ══ -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-backdrop" id="detailBackdrop"></div>
+  <div class="detail-panel">
+    <div class="detail-header">
+      <button class="detail-back" id="detailBack">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Library
+      </button>
+      <span class="detail-breadcrumb">buuks.in / <span id="detailBreadcrumb">Book</span></span>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid" id="detailGrid"><!-- filled by JS --></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CART SIDEBAR ══ -->
+<div class="cart-overlay" id="cartOverlay">
+  <div class="cart-backdrop" id="cartBackdrop"></div>
+  <div class="cart-panel">
+    <div class="cart-header">
+      <div class="cart-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        My Cart
+        <span class="cart-title-count" id="cartTitleCount">0 items</span>
+      </div>
+      <button class="cart-close" id="cartClose">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+      </button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <p>Your cart is empty</p>
+        <small>Tap a book to add it to your cart</small>
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-summary">
+        <div class="cart-row"><span>Items</span><span id="cartSumItems">0</span></div>
+        <div class="cart-row"><span>Total Qty</span><span id="cartSumQty">0</span></div>
+        <div class="cart-total-row"><span>Total</span><span id="cartSumTotal">₹0</span></div>
+      </div>
+      <div class="cart-checkout-btns">
+        <button id="checkoutFormBtn" class="btn-checkout-form">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="checkoutBtnLabel">Place Order Now</span>
+        </button>
+      </div>
+      <button class="btn-clear-cart" id="clearCartBtn">Clear cart</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ CUSTOM ORDER FORM OVERLAY ══ -->
+<div class="order-overlay" id="orderOverlay">
+  <div class="order-backdrop" id="orderBackdrop"></div>
+  <div class="order-modal" id="orderModal">
+    <div class="om-header">
+      <div class="om-header-left">
+        <div class="om-pretitle">buuks.in — Checkout</div>
+        <div class="om-title">Complete Your Order</div>
+      </div>
+      <button class="om-close" id="omClose">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="12" y2="12"/><line x1="12" y1="1" x2="1" y2="12"/></svg>
+      </button>
+    </div>
+
+    <!-- Cart summary -->
+    <div class="om-cart-summary" id="omCartSummary"></div>
+
+    <!-- Customer form -->
+    <div class="om-form" id="omForm">
+      <div class="om-row">
+        <div class="om-field">
+          <label class="om-label">Full Name <span>*</span></label>
+          <input class="om-input" id="omName" type="text" placeholder="e.g. Rahul Sharma" autocomplete="name"/>
+        </div>
+        <div class="om-field">
+          <label class="om-label">Phone / WhatsApp <span>*</span></label>
+          <input class="om-input" id="omPhone" type="tel" placeholder="e.g. 9830012345" autocomplete="tel"/>
+        </div>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Email Address <span>*</span></label>
+        <input class="om-input" id="omEmail" type="email" placeholder="e.g. rahul@email.com" autocomplete="email"/>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Delivery Address <span>*</span></label>
+        <textarea class="om-textarea" id="omAddress" placeholder="House/Flat No., Street, Area, City, PIN Code" rows="3" autocomplete="street-address"></textarea>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Special Instructions</label>
+        <textarea class="om-textarea" id="omNote" placeholder="Any special requests or delivery instructions…" rows="2"></textarea>
+      </div>
+      <button class="om-submit" id="omSubmit">
+        <div class="om-spinner"></div>
+        <span class="om-btn-text">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Confirm Order
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ORDER SUCCESS OVERLAY ══ -->
+<div class="order-success-overlay" id="orderSuccessOverlay">
+  <div class="os-confetti" id="osConfetti"></div>
+  <div class="os-icon">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <div class="os-label">Order Confirmed</div>
+  <div class="os-title">Your order is placed! 🎉</div>
+  <div class="os-sub" id="os-sub-msg">We've saved your order in the sheet. Our team will contact you to confirm delivery!</div>
+  <div class="os-order-id" id="osOrderId">Order #BK000001</div>
+  <button class="os-back" id="osBackBtn">Continue Shopping</button>
+</div>
+
+<footer>
+  <div class="foot-inner">
+
+    <!-- Brand col -->
+    <div class="foot-brand-col">
+      <a class="foot-logo" href="#">
+        <div class="foot-logo-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <span class="foot-logo-name">buuks<span>.in</span></span>
+      </a>
+      <p class="foot-desc">Your personal online book store. Discover, browse and order from a handpicked library — delivered to your door.</p>
+      <div class="foot-social">
+        <!-- Instagram -->
+        <a href="#" class="foot-social-btn" title="Instagram">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <!-- WhatsApp -->
+        <a href="#" class="foot-social-btn" title="WhatsApp">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        </a>
+        <!-- Facebook -->
+        <a href="#" class="foot-social-btn" title="Facebook">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div>
+      <div class="foot-col-title">Quick Links</div>
+      <div class="foot-links">
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Browse All Books
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          New Arrivals
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Best Sellers
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Fiction
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Non-Fiction
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Self-Help
+        </a>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div>
+      <div class="foot-col-title">Information</div>
+      <div class="foot-links">
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          About Us
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          How to Order
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Delivery Info
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Returns Policy
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Privacy Policy
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Terms of Service
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div>
+      <div class="foot-col-title">Contact Us</div>
+      <div class="foot-contact-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
+        <span>+91 99999 99999</span>
+      </div>
+      <div class="foot-contact-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <a href="mailto:hello@buuks.in">hello@buuks.in</a>
+      </div>
+      <div class="foot-contact-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Kolkata, West Bengal<br/>India — 700001</span>
+      </div>
+      <div class="foot-contact-item" style="margin-top:0.75rem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Mon–Sat, 10am – 7pm IST</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="foot-bottom">
+    <div class="foot-copy">© 2026 <span>buuks.in</span> — All rights reserved. Built with ♥ in India</div>
+    <div class="foot-badges">
+      <span class="foot-badge">📦 Free Delivery ₹499+</span>
+      <span class="foot-badge">🔒 Secure Orders</span>
+      <span class="foot-badge">↩️ Easy Returns</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
