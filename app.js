@@ -33,6 +33,8 @@ function isAvail(val) {
 }
 let allBooks = [], filtered = [];
 let cart = {}; // { isbn: { book, qty } }
+const BOOKS_PER_PAGE = 20;
+let currentPage = 1;
 
 /* ── DATA LOADING ── */
 function sheetUrl() {
@@ -103,7 +105,10 @@ function applyFilters() {
     if(sort==='price_desc') return px(b)-px(a);
     return 0;
   });
-  drawTags(q,genre,lang,avail); renderBooks();
+  drawTags(q,genre,lang,avail);
+  currentPage = 1; // reset to first page on every filter/search change
+  $('loadMoreBtn').style.display = '';
+  renderBooks();
   const total=allBooks.length, cnt=filtered.length;
   $('rtext').innerHTML=cnt===total?`Showing all <strong>${total}</strong> books`:`<strong>${cnt}</strong> of <strong>${total}</strong> books`;
 }
@@ -124,24 +129,53 @@ function drawTags(q,genre,lang,avail){
 
 /* ── RENDER CATALOG ── */
 function renderBooks() {
-  const catalog=$('catalog');
-  if(!filtered.length){
-    catalog.innerHTML=`<div class="statebox"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No books found</p><small>Try adjusting your search or filters</small></div>`;
+  const catalog = $('catalog');
+  const loadWrap = $('loadMoreWrap');
+  const loadBtn  = $('loadMoreBtn');
+  const loadInfo = $('loadMoreInfo');
+
+  if (!filtered.length) {
+    catalog.innerHTML = `<div class="statebox"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No books found</p><small>Try adjusting your search or filters</small></div>`;
+    loadWrap.style.display = 'none';
     return;
   }
-  catalog.innerHTML=filtered.map((b,i)=>card(b,i)).join('');
-  // re-attach click handlers
-  catalog.querySelectorAll('.bcard').forEach(el=>{
-    const isbn=el.dataset.isbn;
-    el.addEventListener('click', e=>{
-      if(e.target.closest('.btn-addcart')) return;
+
+  const total    = filtered.length;
+  const showing  = Math.min(currentPage * BOOKS_PER_PAGE, total);
+  const visible  = filtered.slice(0, showing);
+  const hasMore  = showing < total;
+
+  catalog.innerHTML = visible.map((b,i) => card(b,i)).join('');
+
+  // Load More bar
+  if (hasMore) {
+    loadWrap.style.display = 'flex';
+    loadInfo.innerHTML = `Showing <strong>${showing}</strong> of <strong>${total}</strong> books`;
+    loadBtn.classList.remove('loading');
+    loadBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Load More Books`;
+  } else {
+    if (total > BOOKS_PER_PAGE) {
+      // All loaded — show a done message
+      loadWrap.style.display = 'flex';
+      loadInfo.innerHTML = `Showing all <strong>${total}</strong> books`;
+      loadBtn.style.display = 'none';
+    } else {
+      loadWrap.style.display = 'none';
+    }
+  }
+
+  // Re-attach click handlers
+  catalog.querySelectorAll('.bcard').forEach(el => {
+    const isbn = el.dataset.isbn;
+    el.addEventListener('click', e => {
+      if (e.target.closest('.btn-addcart')) return;
       openDetail(isbn);
     });
-    const addBtn=el.querySelector('.btn-addcart');
-    if(addBtn && !addBtn.classList.contains('sold')){
-      addBtn.addEventListener('click', e=>{
+    const addBtn = el.querySelector('.btn-addcart');
+    if (addBtn && !addBtn.classList.contains('sold')) {
+      addBtn.addEventListener('click', e => {
         e.stopPropagation();
-        const book=allBooks.find(b=>b.isbn===isbn);
+        const book = allBooks.find(b => b.isbn === isbn);
         toggleCart(book, addBtn);
       });
     }
@@ -583,6 +617,19 @@ $('osBackBtn').addEventListener('click', closeSuccessScreen);
 
 /* ── EVENT LISTENERS ── */
 $('searchInput').addEventListener('input',  applyFilters);
+$('loadMoreBtn').addEventListener('click', () => {
+  const btn = $('loadMoreBtn');
+  btn.classList.add('loading');
+  btn.innerHTML = `<div class="lm-spinner"></div> Loading…`;
+  setTimeout(() => {
+    currentPage++;
+    renderBooks();
+    // Smooth scroll to newly loaded content
+    const cards = document.querySelectorAll('.bcard');
+    const firstNew = cards[(currentPage - 1) * BOOKS_PER_PAGE];
+    if (firstNew) firstNew.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+});
 $('genreFilter').addEventListener('change', applyFilters);
 $('langFilter').addEventListener('change',  applyFilters);
 $('availFilter').addEventListener('change', applyFilters);
