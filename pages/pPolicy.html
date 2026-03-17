@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Delivery Info — Buuks.in</title>
+  <title>Privacy Policy — Buuks.in</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -18,8 +18,6 @@
       --accent:    #6366f1;
       --accent-bg: #eef0ff;
       --accent-s:  #dde0ff;
-      --sh-lg: 0 12px 40px rgba(28,29,48,0.13);
-      --r-lg: 16px;
     }
 
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -72,48 +70,30 @@
     @media(max-width:480px){.foot-inner{grid-template-columns:1fr;gap:1.5rem}}
 
     /* PAGE SPECIFIC */
-    .page-hero{background:var(--white);border-bottom:1px solid var(--border);padding:4rem 1.5rem 3rem;text-align:center;position:relative;overflow:hidden;min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .page-hero{background:var(--white);border-bottom:1px solid var(--border);padding:3rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden}
     .page-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle 350px at 15% 35%, rgba(99,102,241,0.08), transparent),radial-gradient(circle 250px at 85% 45%, rgba(139,92,246,0.07), transparent)}
-    .page-hero h1{font-size:clamp(1.8rem, 5vw, 3rem);font-weight:800;color:var(--text);line-height:1.15;letter-spacing:-0.03em;position:relative;z-index:1;margin-bottom:0.8rem}
+    .page-hero h1{font-size:clamp(1.8rem, 5vw, 2.8rem);font-weight:800;color:var(--text);line-height:1.15;letter-spacing:-0.03em;position:relative;z-index:1;margin-bottom:0.5rem}
     .page-hero h1 .accent{color:var(--accent)}
-    .page-hero .subtext{font-size:1.05rem;color:var(--text2);max-width:520px;line-height:1.7;position:relative;z-index:1}
+    .page-hero .last-update{font-size:0.85rem;color:var(--text3);position:relative;z-index:1}
 
     .page-section{background:var(--white);background-image:radial-gradient(var(--border2) 1.2px, transparent 1.2px);background-size:26px 26px;padding:3.5rem 1.5rem;border-bottom:1px solid var(--border)}
-    .section-container{max-width:1000px;margin:0 auto}
-    .section-badge{display:inline-flex;align-items:center;gap:0.35rem;background:var(--accent-bg);color:var(--accent);font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.75rem;border-radius:20px;border:1px solid var(--accent-s);margin-bottom:1rem}
-    .section-badge span{width:5px;height:5px;background:var(--accent);border-radius:50%;display:inline-block}
-    .section-title{font-size:2rem;font-weight:800;color:var(--text);margin-bottom:1.5rem;letter-spacing:-0.02em}
-    .section-title .accent{color:var(--accent)}
+    .section-container{max-width:900px;margin:0 auto}
+    .section-title{font-size:1.5rem;font-weight:800;color:var(--text);margin-bottom:1rem;letter-spacing:-0.02em;margin-top:2rem}
+    .section-title:first-child{margin-top:0}
+    .policy-text{font-size:0.95rem;color:var(--text2);line-height:1.75;margin-bottom:1.5rem}
+    .policy-list{list-style:none;padding:0;margin-bottom:1.5rem}
+    .policy-list li{font-size:0.95rem;color:var(--text2);line-height:1.75;padding-left:1.5rem;position:relative;margin-bottom:0.75rem}
+    .policy-list li::before{content:'•';position:absolute;left:0;color:var(--accent);font-weight:700}
 
-    .info-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1.5rem;margin:2rem 0}
-    .info-card{background:var(--accent-bg);border:1px solid var(--accent-s);border-radius:var(--r-lg);padding:1.5rem}
-    .info-card h3{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:0.75rem}
-    .info-card p{font-size:0.95rem;color:var(--text2);line-height:1.6}
-
-    .timeline{display:flex;flex-direction:column;gap:1.5rem;margin:2rem 0}
-    .timeline-item{display:flex;gap:1.5rem}
-    .timeline-marker{width:40px;height:40px;background:var(--accent-bg);border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700;flex-shrink:0}
-    .timeline-content h4{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:0.5rem}
-    .timeline-content p{font-size:0.95rem;color:var(--text2);line-height:1.6}
-
-    .highlight-box{background:var(--accent-bg);border-left:4px solid var(--accent);padding:1.5rem;border-radius:8px;margin:2rem 0}
-    .highlight-box h3{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:0.5rem}
-    .highlight-box p{font-size:0.95rem;color:var(--text2);line-height:1.6}
-
-    .faq-item{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
-    .faq-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-    .faq-q{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:0.5rem}
-    .faq-a{font-size:0.95rem;color:var(--text2);line-height:1.6}
+    .highlight-box{background:var(--accent-bg);border-left:4px solid var(--accent);padding:1.5rem;border-radius:8px;margin:1.5rem 0;font-size:0.95rem;color:var(--text2);line-height:1.75}
 
     @media(max-width:768px){
       .page-section{padding:2.5rem 1rem}
-      .section-title{font-size:1.7rem}
-      .info-grid{grid-template-columns:1fr}
-      .timeline-item{gap:1rem}
+      .section-title{font-size:1.3rem}
     }
     @media(max-width:480px){
       .page-hero h1{font-size:1.6rem}
-      .page-hero .subtext{font-size:0.95rem}
+      .page-hero .last-update{font-size:0.8rem}
     }
   </style>
 </head>
@@ -147,146 +127,67 @@
 </header>
 
 <section class="page-hero">
-  <h1>Delivery <span class="accent">Information</span></h1>
-  <p class="subtext">Fast, reliable delivery right to your doorstep. Here's everything you need to know about how we deliver.</p>
+  <h1>Privacy <span class="accent">Policy</span></h1>
+  <div class="last-update">Last updated: March 2026</div>
 </section>
 
 <section class="page-section">
   <div class="section-container">
-    <div class="section-badge"><span></span>Shipping Details</div>
-    <h2 class="section-title">Delivery <span class="accent">Timeline</span></h2>
-    
-    <div class="info-grid">
-      <div class="info-card">
-        <h3>📍 Local (Kolkata)</h3>
-        <p><strong>3 days</strong> from order confirmation. Same area deliveries may arrive within 24 hours.</p>
-      </div>
-      
-      <div class="info-card">
-        <h3>🚚 Pan-India</h3>
-        <p><strong>5–7 days</strong> depending on location. Metro cities get faster delivery.</p>
-      </div>
-      
-      <div class="info-card">
-        <h3>📅 Order Days</h3>
-        <p>We process orders <strong>Mon–Sat</strong>. Sunday orders begin processing on Monday.</p>
-      </div>
-    </div>
+    <h2 class="section-title">Introduction</h2>
+    <p class="policy-text">At Buuks.in, we take your privacy seriously. This Privacy Policy explains how we collect, use, protect, and disclose your personal information when you order books from our store. By using Buuks.in, you consent to the practices described below.</p>
+
+    <h2 class="section-title">Information We Collect</h2>
+    <p class="policy-text">We collect information necessary to process your orders and provide you with the best service:</p>
+    <ul class="policy-list">
+      <li><strong>Name & Contact Information:</strong> Full name, phone number, email address</li>
+      <li><strong>Delivery Address:</strong> Complete address including street, city, state, and PIN code</li>
+      <li><strong>Order Information:</strong> Books you purchase, order date, quantity, and payment method</li>
+      <li><strong>Device Information:</strong> IP address, browser type, pages visited (via cookies)</li>
+      <li><strong>Special Instructions:</strong> Any delivery notes or preferences you provide</li>
+    </ul>
+
+    <h2 class="section-title">How We Use Your Information</h2>
+    <p class="policy-text">Your information is used only for legitimate business purposes:</p>
+    <ul class="policy-list">
+      <li>Process and fulfill your orders</li>
+      <li>Contact you regarding order status and delivery</li>
+      <li>Send order confirmations and invoices</li>
+      <li>Improve our service and user experience</li>
+      <li>Respond to customer inquiries and support requests</li>
+      <li>Comply with legal obligations</li>
+    </ul>
 
     <div class="highlight-box">
-      <h3>⏰ Delivery Days & Hours</h3>
-      <p>Delivery happens <strong>Monday–Saturday, 9am–6pm</strong>. We don't deliver on Sundays or public holidays.</p>
-    </div>
-  </div>
-</section>
-
-<section class="page-section">
-  <div class="section-container">
-    <div class="section-badge"><span></span>Shipping Costs</div>
-    <h2 class="section-title">Shipping <span class="accent">Charges</span></h2>
-    
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="timeline-marker">✓</div>
-        <div class="timeline-content">
-          <h4>Free Delivery (₹499+)</h4>
-          <p>Orders above ₹499 ship FREE across India. No hidden charges, no surprise fees.</p>
-        </div>
-      </div>
-      
-      <div class="timeline-item">
-        <div class="timeline-marker">₹</div>
-        <div class="timeline-content">
-          <h4>Standard Shipping (Below ₹499)</h4>
-          <p>₹50 flat shipping charge for orders below ₹499. Applicable across India.</p>
-        </div>
-      </div>
-      
-      <div class="timeline-item">
-        <div class="timeline-marker">💡</div>
-        <div class="timeline-content">
-          <h4>Pro Tip</h4>
-          <p>Add just a few more books to your order to hit ₹499 and enjoy FREE delivery!</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="page-section">
-  <div class="section-container">
-    <div class="section-badge"><span></span>During Delivery</div>
-    <h2 class="section-title">What to <span class="accent">Expect</span></h2>
-    
-    <div class="info-grid">
-      <div class="info-card">
-        <h3>📞 We'll Call First</h3>
-        <p>Our delivery partner will call you 1–2 hours before arrival to confirm your address and timing.</p>
-      </div>
-      
-      <div class="info-card">
-        <h3>✅ Check Before Paying</h3>
-        <p>Inspect your books before payment. Verify titles, condition, and quantity. You can refuse if anything's wrong.</p>
-      </div>
-      
-      <div class="info-card">
-        <h3>💵 Cash on Delivery</h3>
-        <p>Pay the delivery person in cash. Get an invoice receipt. No online payment needed.</p>
-      </div>
+      <strong>We do NOT:</strong> Sell, trade, or rent your personal information to third parties. Your data is only shared with delivery partners necessary to fulfill your orders.
     </div>
 
-    <div class="highlight-box">
-      <h3>📦 Packaging</h3>
-      <p>Your books are carefully packed to prevent damage. They're wrapped securely and shipped in sturdy boxes. We take care so your books arrive in perfect condition.</p>
-    </div>
-  </div>
-</section>
+    <h2 class="section-title">Data Security</h2>
+    <p class="policy-text">We implement reasonable security measures to protect your information from unauthorized access, disclosure, or misuse. However, no method of transmission over the internet is 100% secure. While we strive to protect your data, we cannot guarantee absolute security.</p>
 
-<section class="page-section">
-  <div class="section-container">
-    <div class="section-badge"><span></span>Common Questions</div>
-    <h2 class="section-title">Delivery <span class="accent">FAQ</span></h2>
-    
-    <div class="faq-item">
-      <div class="faq-q">❓ Can I track my order?</div>
-      <div class="faq-a">Yes! You'll receive an order confirmation email/SMS with tracking details. We'll also call you before delivery.</div>
-    </div>
-    
-    <div class="faq-item">
-      <div class="faq-q">❓ What if I'm not home during delivery?</div>
-      <div class="faq-a">Our delivery partner will call you beforehand. Please coordinate a suitable time. If you're unavailable, contact us to reschedule.</div>
-    </div>
-    
-    <div class="faq-item">
-      <div class="faq-q">❓ Can I change my delivery address?</div>
-      <div class="faq-a">Yes, if you contact us within 1 hour of placing your order. After that, the order is already assigned to a delivery partner.</div>
-    </div>
-    
-    <div class="faq-item">
-      <div class="faq-q">❓ What if a book arrives damaged?</div>
-      <div class="faq-a">Refuse the damaged item during delivery. Contact us immediately with photos, and we'll send a replacement free of charge.</div>
-    </div>
-    
-    <div class="faq-item">
-      <div class="faq-q">❓ Do you ship internationally?</div>
-      <div class="faq-a">Currently, we deliver only within India. We're working on expanding internationally soon!</div>
-    </div>
-    
-    <div class="faq-item">
-      <div class="faq-q">❓ What if my order is late?</div>
-      <div class="faq-a">We guarantee 3–5 days within our service area. If it's delayed beyond that, contact us immediately for updates.</div>
-    </div>
-  </div>
-</section>
+    <h2 class="section-title">Cookies & Tracking</h2>
+    <p class="policy-text">Our website uses cookies to enhance your browsing experience and track website usage. Cookies help us remember your preferences and improve our service. You can disable cookies in your browser settings, though this may affect site functionality.</p>
 
-<section class="page-section">
-  <div class="section-container">
-    <div class="section-badge"><span></span>Need Help?</div>
-    <h2 class="section-title">Contact <span class="accent">Support</span></h2>
-    <p style="font-size:1rem;color:var(--text2);line-height:1.7;margin-bottom:1.5rem;">Having issues with your delivery? Reach out to our support team.</p>
-    <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.95rem;color:var(--text);">
-      <div><strong>📞 Phone:</strong> +91 99999 99999</div>
+    <h2 class="section-title">Your Rights</h2>
+    <p class="policy-text">You have the right to:</p>
+    <ul class="policy-list">
+      <li>Access the personal information we hold about you</li>
+      <li>Request correction of inaccurate information</li>
+      <li>Request deletion of your data (subject to legal requirements)</li>
+      <li>Opt-out of marketing communications</li>
+      <li>Request a copy of your personal data</li>
+    </ul>
+
+    <h2 class="section-title">Third-Party Links</h2>
+    <p class="policy-text">Our website may contain links to third-party websites. We are not responsible for their privacy practices. We encourage you to review their privacy policies before providing any personal information.</p>
+
+    <h2 class="section-title">Changes to This Policy</h2>
+    <p class="policy-text">We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date. Your continued use of Buuks.in constitutes acceptance of the updated policy.</p>
+
+    <h2 class="section-title">Contact Us</h2>
+    <p class="policy-text">If you have questions about our Privacy Policy or wish to exercise your privacy rights, please contact us:</p>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.95rem;color:var(--text);margin-top:1rem;">
       <div><strong>📧 Email:</strong> hello@buuks.in</div>
+      <div><strong>📞 Phone:</strong> +91 99999 99999</div>
       <div><strong>⏰ Hours:</strong> Mon–Sat, 10am–7pm IST</div>
     </div>
   </div>
@@ -331,20 +232,19 @@
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           About Us
         </a>
-        <a href="/pages/how_to_order.html" class="foot-link">
+        <a href="/pages/hOrder.html" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           How to Order
         </a>
-        <a href="/pages/delivery_info.html" class="foot-link">
+        <a href="/pages/delivery.html" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           Delivery Info
         </a>
-        <a href="/pages/privacy_policy.html" class="foot-link">
+        <a href="/pages/pPolicy.html" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           Privacy Policy
         </a>
       </div>
-    </div>
     </div>
     <div>
       <div class="foot-col-title">Contact Us</div>
