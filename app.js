@@ -32,9 +32,9 @@ function isAvail(val) {
   return v === 'yes' || v === 'y' || v === 'true' || v === '1';
 }
 let allBooks = [], filtered = [];
-let cart = {}; // { isbn: { book, qty } }
-const BOOKS_PER_PAGE = 20;
+let cart = {};
 let currentPage = 1;
+const PER_PAGE  = 20;
 
 /* ── DATA LOADING ── */
 function sheetUrl() {
@@ -78,12 +78,69 @@ function updateStats() {
 }
 
 function buildFilters() {
-  const genres=[...new Set(allBooks.map(b=>b.genre).filter(Boolean))].sort();
-  const langs=[...new Set(allBooks.map(b=>b.language).filter(Boolean))].sort();
-  const gs=$('genreFilter'), ls=$('langFilter');
-  genres.forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;gs.appendChild(o)});
-  langs.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;ls.appendChild(o)});
+  const genres = [...new Set(allBooks.map(b=>b.genre).filter(Boolean))].sort();
+  const langs  = [...new Set(allBooks.map(b=>b.language).filter(Boolean))].sort();
+
+  // Build genre dropdown items
+  const gMenu = $('dd-genre-menu');
+  genres.forEach(g => {
+    const el = document.createElement('div');
+    el.className = 'cdd-item'; el.dataset.val = g; el.textContent = g;
+    gMenu.appendChild(el);
+  });
+
+  // Build language dropdown items
+  const lMenu = $('dd-lang-menu');
+  langs.forEach(l => {
+    const el = document.createElement('div');
+    el.className = 'cdd-item'; el.dataset.val = l; el.textContent = l;
+    lMenu.appendChild(el);
+  });
+
+  // Wire up all custom dropdowns
+  setupDropdown('dd-genre',  'dd-genre-label',  'genreFilter', 'All Genres');
+  setupDropdown('dd-lang',   'dd-lang-label',   'langFilter',  'All Languages');
+  setupDropdown('dd-avail',  'dd-avail-label',  'availFilter', 'All Books');
+  setupDropdown('dd-sort',   'dd-sort-label',   'sortSel',     'Title A–Z');
 }
+
+function setupDropdown(ddId, labelId, hiddenId, defaultLabel) {
+  const dd    = $(ddId);
+  const btn   = dd.querySelector('.cdd-btn');
+  const menu  = dd.querySelector('.cdd-menu');
+  const label = $(labelId);
+
+  // Toggle open/close
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    // Close all other dropdowns first
+    document.querySelectorAll('.cdd.open').forEach(o => { if(o!==dd) o.classList.remove('open'); });
+    dd.classList.toggle('open');
+  });
+
+  // Item click
+  menu.querySelectorAll('.cdd-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const val = item.dataset.val;
+      // Update hidden select
+      $(hiddenId).value = val;
+      // Update label
+      label.textContent = val ? item.textContent.trim() : defaultLabel;
+      // Update active state
+      menu.querySelectorAll('.cdd-item').forEach(i => i.classList.remove('cdd-active'));
+      item.classList.add('cdd-active');
+      // Mark as active filter
+      dd.classList.toggle('active-filter', !!val);
+      dd.classList.remove('open');
+      applyFilters();
+    });
+  });
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', () => {
+  document.querySelectorAll('.cdd.open').forEach(dd => dd.classList.remove('open'));
+});
 
 /* ── FILTERING ── */
 function applyFilters() {
@@ -106,8 +163,7 @@ function applyFilters() {
     return 0;
   });
   drawTags(q,genre,lang,avail);
-  currentPage = 1; // reset to first page on every filter/search change
-  $('loadMoreBtn').style.display = '';
+  currentPage = 1;
   renderBooks();
   const total=allBooks.length, cnt=filtered.length;
   $('rtext').innerHTML=cnt===total?`Showing all <strong>${total}</strong> books`:`<strong>${cnt}</strong> of <strong>${total}</strong> books`;
@@ -118,50 +174,63 @@ function px(b){return parseFloat((b.price||'0').replace(/[^\d.]/g,''))||0}
 function drawTags(q,genre,lang,avail){
   const tags=[];
   if(q)     tags.push({l:`"${q}"`,     c:()=>{$('searchInput').value='';applyFilters()}});
-  if(genre) tags.push({l:genre,        c:()=>{$('genreFilter').value='';applyFilters()}});
-  if(lang)  tags.push({l:lang,         c:()=>{$('langFilter').value='';applyFilters()}});
-  if(avail) tags.push({l:avail==='yes'?'In Stock':'Sold Out',c:()=>{$('availFilter').value='';applyFilters()}});
+  if(genre) tags.push({l:genre, c:()=>{ $('genreFilter').value=''; resetDD('dd-genre','dd-genre-label','All Genres'); applyFilters(); }});
+  if(lang)  tags.push({l:lang,  c:()=>{ $('langFilter').value='';  resetDD('dd-lang','dd-lang-label','All Languages'); applyFilters(); }});
+  if(avail) tags.push({l:avail==='yes'?'In Stock':'Sold Out', c:()=>{ $('availFilter').value=''; resetDD('dd-avail','dd-avail-label','All Books'); applyFilters(); }});
   const wrap=$('atags');
   wrap.innerHTML=tags.map((t,i)=>`<button class="atag" data-i="${i}">${esc(t.l)}<svg width="9" height="9" viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="1.5" y1="1.5" x2="7.5" y2="7.5"/><line x1="7.5" y1="1.5" x2="1.5" y2="7.5"/></svg></button>`).join('');
   wrap.querySelectorAll('.atag').forEach((el,i)=>el.addEventListener('click',tags[i].c));
-  ['genreFilter','langFilter','availFilter'].forEach(id=>{const el=$(id);el.classList.toggle('on',!!el.value)});
+  ['genreFilter','langFilter','availFilter'].forEach(id=>{
+    const map = {genreFilter:'dd-genre', langFilter:'dd-lang', availFilter:'dd-avail'};
+    const dd = $(map[id]);
+    if(dd) dd.classList.toggle('active-filter', !!$(id).value);
+  });
+}
+
+function resetDD(ddId, labelId, defaultLabel) {
+  const dd = $(ddId);
+  if(!dd) return;
+  $(labelId).textContent = defaultLabel;
+  dd.classList.remove('active-filter');
+  dd.querySelectorAll('.cdd-item').forEach((item,i) => {
+    item.classList.toggle('cdd-active', i===0);
+  });
 }
 
 /* ── RENDER CATALOG ── */
 function renderBooks() {
   const catalog = $('catalog');
-  const loadWrap = $('loadMoreWrap');
-  const loadBtn  = $('loadMoreBtn');
-  const loadInfo = $('loadMoreInfo');
 
   if (!filtered.length) {
     catalog.innerHTML = `<div class="statebox"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No books found</p><small>Try adjusting your search or filters</small></div>`;
-    loadWrap.style.display = 'none';
+    $('paginationWrap').style.display = 'none';
     return;
   }
 
-  const total    = filtered.length;
-  const showing  = Math.min(currentPage * BOOKS_PER_PAGE, total);
-  const visible  = filtered.slice(0, showing);
-  const hasMore  = showing < total;
+  const total      = filtered.length;
+  const totalPages = Math.ceil(total / PER_PAGE);
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start      = (currentPage - 1) * PER_PAGE;
+  const end        = Math.min(start + PER_PAGE, total);
+  const visible    = filtered.slice(start, end);
 
-  catalog.innerHTML = visible.map((b,i) => card(b,i)).join('');
+  // Update results text
+  document.getElementById('rtext').innerHTML =
+    total <= PER_PAGE
+      ? `Showing all <strong>${total}</strong> books`
+      : `Showing <strong>${start+1}–${end}</strong> of <strong>${total}</strong> books`;
 
-  // Load More bar
-  if (hasMore) {
-    loadWrap.style.display = 'flex';
-    loadInfo.innerHTML = `Showing <strong>${showing}</strong> of <strong>${total}</strong> books`;
-    loadBtn.classList.remove('loading');
-    loadBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Load More Books`;
+  catalog.innerHTML = visible.map((b,i) => card(b, start + i)).join('');
+
+  // Scroll to top of catalog smoothly when page changes
+  catalog.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Pagination bar
+  if (totalPages > 1) {
+    $('paginationWrap').style.display = 'flex';
+    renderPagination(totalPages);
   } else {
-    if (total > BOOKS_PER_PAGE) {
-      // All loaded — show a done message
-      loadWrap.style.display = 'flex';
-      loadInfo.innerHTML = `Showing all <strong>${total}</strong> books`;
-      loadBtn.style.display = 'none';
-    } else {
-      loadWrap.style.display = 'none';
-    }
+    $('paginationWrap').style.display = 'none';
   }
 
   // Re-attach click handlers
@@ -180,6 +249,49 @@ function renderBooks() {
       });
     }
   });
+}
+
+function renderPagination(totalPages) {
+  const bar  = $('paginationBar');
+  const curr = currentPage;
+  let html   = '';
+
+  // Prev button
+  html += `<button class="pg-btn pg-prev" ${curr===1?'disabled':''} data-p="${curr-1}">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15,18 9,12 15,6"/></svg>
+    Prev
+  </button>`;
+
+  // Page numbers with ellipsis
+  const pages = getPageNumbers(curr, totalPages);
+  pages.forEach(p => {
+    if (p === '...') {
+      html += `<span class="pg-ellipsis">…</span>`;
+    } else {
+      html += `<button class="pg-btn${p===curr?' active':''}" data-p="${p}">${p}</button>`;
+    }
+  });
+
+  // Next button
+  html += `<button class="pg-btn pg-next" ${curr===totalPages?'disabled':''} data-p="${curr+1}">
+    Next
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9,18 15,12 9,6"/></svg>
+  </button>`;
+
+  bar.innerHTML = html;
+  bar.querySelectorAll('.pg-btn[data-p]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentPage = +btn.dataset.p;
+      renderBooks();
+    });
+  });
+}
+
+function getPageNumbers(curr, total) {
+  if (total <= 7) return Array.from({length: total}, (_,i) => i+1);
+  if (curr <= 4)  return [1,2,3,4,5,'...',total];
+  if (curr >= total-3) return [1,'...',total-4,total-3,total-2,total-1,total];
+  return [1,'...',curr-1,curr,curr+1,'...',total];
 }
 
 function card(b,i) {
@@ -616,24 +728,8 @@ $('osBackBtn').addEventListener('click', closeSuccessScreen);
 });
 
 /* ── EVENT LISTENERS ── */
-$('searchInput').addEventListener('input',  applyFilters);
-$('loadMoreBtn').addEventListener('click', () => {
-  const btn = $('loadMoreBtn');
-  btn.classList.add('loading');
-  btn.innerHTML = `<div class="lm-spinner"></div> Loading…`;
-  setTimeout(() => {
-    currentPage++;
-    renderBooks();
-    // Smooth scroll to newly loaded content
-    const cards = document.querySelectorAll('.bcard');
-    const firstNew = cards[(currentPage - 1) * BOOKS_PER_PAGE];
-    if (firstNew) firstNew.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 300);
-});
-$('genreFilter').addEventListener('change', applyFilters);
-$('langFilter').addEventListener('change',  applyFilters);
-$('availFilter').addEventListener('change', applyFilters);
-$('sortSel').addEventListener('change',     applyFilters);
+$('searchInput').addEventListener('input', applyFilters);
+// filters wired via custom dropdowns in buildFilters()
 
 $('gridBtn').addEventListener('click', ()=>{
   $('catalog').classList.remove('list-view');
