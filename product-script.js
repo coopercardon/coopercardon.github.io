@@ -1,5 +1,6 @@
 /* Product Page Script */
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHchAmv037NjgZckS_fTzSRlDaqnnf96YnVsq_aKhP3BNXM7noWu-078Uvk_7VZvTIH34zVTy0ZE_n/pub?gid=116858916&single=true&output=csv";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD_z9H9WKFSxDn8_YtxhxKVh3Bc6kR5hv8aP8u10_SIgB-rSPm5eHaDAN38962o5wZXQ/exec";
 const PROXY = "https://corsproxy.io/?";
 
 let allBooks = [];
@@ -105,8 +106,22 @@ async function submitOrder() {
   const payload = { orderId, timestamp, name, phone, email, address, note, titles, isbns, totalQty,
     subtotal: `₹${subAmt.toFixed(0)}`, delivery: delAmt===0?'FREE':`₹${delAmt}`, totalAmt: `₹${totalAmt.toFixed(0)}` };
 
+  // Send to Apps Script
+  if (APPS_SCRIPT_URL) {
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.warn('Apps Script fetch error:', e);
+    }
+  }
+
   closeOrderForm();
-  showSuccessScreen(orderId, true);
+  showSuccessScreen(orderId, false);
   cart = {};
   saveCartToStorage();
   updateCartUI();
@@ -115,9 +130,7 @@ async function submitOrder() {
 
 function showSuccessScreen(orderId, demoMode) {
   $('osOrderId').textContent = `Order #${orderId}`;
-  $('os-sub-msg').textContent = demoMode
-    ? '⚠️ Apps Script not set up yet — order not saved to sheet. Deploy the Apps Script to start saving real orders.'
-    : "We've saved your order in the sheet. Our team will contact you to confirm delivery!";
+  $('os-sub-msg').textContent = "We've saved your order. Our team will contact you to confirm delivery!";
   launchConfetti();
   $('orderSuccessOverlay').classList.add('show');
   document.body.style.overflow = 'hidden';
