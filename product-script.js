@@ -139,23 +139,26 @@ function parseMarkdown(mdText) {
   return `<p>${html}</p>`;
 }
 
-function initPage() {
+async function initPage() {
   const book = findBook();
-  console.log('Finding book with ISBN from URL...');
+  console.log('=== INIT PAGE CALLED ===');
   console.log('All books loaded:', allBooks.length);
   console.log('Looking for ISBN:', getURLParam('isbn'));
   
   if(!book) {
-    console.log('Book not found!');
+    console.log('❌ Book not found!');
     renderError('Book not found', 'The book you are looking for does not exist or has been removed.');
     return;
   }
   currentBook = book;
-  console.log('Book found:', book.title);
-  renderProduct(book);
+  console.log('✓ Book found:', book.title);
+  console.log('Starting renderProduct...');
+  await renderProduct(book);  // ← AWAIT THE ASYNC FUNCTION
+  console.log('✓ renderProduct completed');
   updateMetaTags(book);
   updateSchemaData(book);
   updateCartCount();
+  console.log('=== INIT PAGE COMPLETE ===');
   
   // Update button state if book is already in cart
   setTimeout(() => {
