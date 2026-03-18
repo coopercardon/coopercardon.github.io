@@ -131,6 +131,14 @@ function initPage() {
   updateMetaTags(book);
   updateSchemaData(book);
   updateCartCount();
+  
+  // Update button state if book is already in cart
+  setTimeout(() => {
+    const key = book.isbn || book.title;
+    if(cart[key]) {
+      updateCartUI();
+    }
+  }, 100);
 }
 
 async function renderProduct(book) {
@@ -279,14 +287,22 @@ async function getRelatedBooksHtml(book) {
 function toggleCart(btn) {
   if(!currentBook) return;
   const key = currentBook.isbn || currentBook.title;
+  
   if(cart[key]) {
     delete cart[key];
   } else {
     cart[key] = { book: currentBook, qty: 1 };
   }
+  
+  // Save to localStorage immediately
   saveCartToStorage();
+  
+  // Update UI immediately
   updateCartUI();
   updateCartCount();
+  
+  // Log for debugging
+  console.log('Cart updated:', cart);
 }
 
 function orderNow() {
@@ -313,8 +329,26 @@ function updateCartUI() {
 
 function updateCartCount() {
   const count = Object.keys(cart).length;
-  $('topCount').innerHTML = count > 0 ? `<strong>${count}</strong> in cart` : '<strong>0</strong> items';
-  $('cartCount').textContent = count;
+  const totalQty = Object.values(cart).reduce((sum, item) => sum + (item.qty || 1), 0);
+  
+  const topCount = $('topCount');
+  if(topCount) {
+    topCount.textContent = count > 0 ? `${totalQty} in cart` : '0 items';
+    topCount.classList.toggle('show', count > 0);
+  }
+  
+  const cartCountEl = $('cartCount');
+  if(cartCountEl) {
+    cartCountEl.textContent = totalQty;
+    cartCountEl.classList.toggle('show', count > 0);
+  }
+  
+  console.log('Cart count updated:', totalQty, 'items');
+}
+
+function cartCheckout() {
+  saveCartToStorage();
+  window.location.href = 'pages/hOrder.html';
 }
 
 function updateMetaTags(book) {
@@ -394,11 +428,26 @@ function renderError(title, message) {
 }
 
 $('cartBtn').addEventListener('click', () => {
+  saveCartToStorage();
   if(Object.keys(cart).length > 0) {
-    window.location.href = 'pages/hOrder.html';
+    // Small delay to ensure cart is saved before redirect
+    setTimeout(() => {
+      window.location.href = 'index.html#viewCart';
+    }, 100);
   } else {
     alert('Your cart is empty');
   }
 });
 
 loadBooks();
+
+// Save cart to localStorage before page unload (for persistence on refresh)
+window.addEventListener('beforeunload', () => {
+  saveCartToStorage();
+});
+
+// Sync cart with other pages if this window is refocused
+window.addEventListener('focus', () => {
+  loadCartFromStorage();
+  updateCartCount();
+});
