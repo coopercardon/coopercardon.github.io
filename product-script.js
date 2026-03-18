@@ -535,7 +535,8 @@ function renderCart() {
   }
 }
 
-
+// Cart button handler
+$('cartBtn').addEventListener('click', () => {
   saveCartToStorage();
   if(Object.keys(cart).length > 0) {
     $('cartOverlay').classList.add('open');
