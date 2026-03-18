@@ -558,6 +558,11 @@ select.sort-sel:focus{border-color:var(--accent)}
   100%{transform:translateY(115vh) rotate(900deg);opacity:0}
 }
 
+@keyframes fall{
+  0%{transform:translateY(-10px) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
 .os-icon{
   width:90px;height:90px;border-radius:50%;
   background:var(--green-bg);border:2.5px solid var(--green);
@@ -833,4 +838,90 @@ footer::before{
   .logo-name{font-size:0.85rem}
   .hero h1{font-size:1.35rem}
   .hero-stats{max-width:100%}
+}
+
+/* ══ PAGINATION ══ */
+.catalog-section {
+  width: 100%;
+}
+
+#pagination {
+  padding: 2rem 0 3rem;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination-btn {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-btn:hover:not(.disabled):not(.active) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.pagination-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.pagination-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+  color: var(--text-tertiary);
+  padding: 0 0.25rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .pagination-btn {
+    min-width: 36px;
+    height: 36px;
+    font-size: 13px;
+    padding: 0 0.6rem;
+  }
+  #pagination {
+    padding: 1.5rem 0 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-btn {
+    min-width: 32px;
+    height: 32px;
+    font-size: 12px;
+    padding: 0 0.5rem;
+  }
+  #pagination {
+    padding: 1rem 0 2rem;
+  }
+  .pagination-wrapper {
+    gap: 0.3rem;
+  }
 }

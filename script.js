@@ -34,6 +34,10 @@ function isAvail(val) {
 let allBooks = [], filtered = [];
 let cart = {}; // { isbn: { book, qty } }
 
+/* ── PAGINATION ── */
+const BOOKS_PER_PAGE = 20;
+let currentPage = 1;
+
 /* ── CART PERSISTENCE ── */
 function loadCartFromStorage() {
   try {
@@ -125,7 +129,9 @@ function applyFilters() {
     if(sort==='price_desc') return px(b)-px(a);
     return 0;
   });
-  drawTags(q,genre,lang,avail); renderBooks();
+  currentPage = 1; // Reset to first page when filters change
+  drawTags(q,genre,lang,avail); 
+  renderBooks();
   const total=allBooks.length, cnt=filtered.length;
   $('rtext').innerHTML=cnt===total?`Showing all <strong>${total}</strong> books`:`<strong>${cnt}</strong> of <strong>${total}</strong> books`;
 }
@@ -144,14 +150,25 @@ function drawTags(q,genre,lang,avail){
   ['genreFilter','langFilter','availFilter'].forEach(id=>{const el=$(id);el.classList.toggle('on',!!el.value)});
 }
 
-/* ── RENDER CATALOG ── */
+/* ── RENDER CATALOG WITH PAGINATION ── */
 function renderBooks() {
   const catalog=$('catalog');
   if(!filtered.length){
     catalog.innerHTML=`<div class="statebox"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No books found</p><small>Try adjusting your search or filters</small></div>`;
+    renderPagination();
     return;
   }
-  catalog.innerHTML=filtered.map((b,i)=>card(b,i)).join('');
+  
+  // Calculate pagination
+  const totalPages = Math.ceil(filtered.length / BOOKS_PER_PAGE);
+  if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+  
+  const startIdx = (currentPage - 1) * BOOKS_PER_PAGE;
+  const endIdx = startIdx + BOOKS_PER_PAGE;
+  const pageBooks = filtered.slice(startIdx, endIdx);
+  
+  catalog.innerHTML=pageBooks.map((b,i)=>card(b,i)).join('');
+  
   // re-attach click handlers
   catalog.querySelectorAll('.bcard').forEach(el=>{
     const isbn=el.dataset.isbn;
@@ -168,6 +185,68 @@ function renderBooks() {
       });
     }
   });
+  
+  renderPagination();
+}
+
+function renderPagination() {
+  const totalPages = Math.ceil(filtered.length / BOOKS_PER_PAGE);
+  const paginationContainer = $('pagination');
+  
+  if (!paginationContainer) return;
+  
+  if (filtered.length <= BOOKS_PER_PAGE) {
+    paginationContainer.innerHTML = '';
+    return;
+  }
+  
+  let html = `<div class="pagination-wrapper">`;
+  
+  // Previous button
+  html += `<button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} title="Previous page">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  </button>`;
+  
+  // Page numbers
+  const maxVisible = window.innerWidth < 640 ? 3 : 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  if (endPage - startPage + 1 < maxVisible) {
+    startPage = Math.max(1, endPage - maxVisible + 1);
+  }
+  
+  if (startPage > 1) {
+    html += `<button class="pagination-btn" onclick="goToPage(1)">1</button>`;
+    if (startPage > 2) html += `<span class="pagination-ellipsis">…</span>`;
+  }
+  
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+  }
+  
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) html += `<span class="pagination-ellipsis">…</span>`;
+    html += `<button class="pagination-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+  }
+  
+  // Next button
+  html += `<button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} title="Next page">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  </button>`;
+  
+  html += `</div>`;
+  
+  paginationContainer.innerHTML = html;
+  
+  // Scroll to top of catalog
+  document.querySelector('.catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function goToPage(page) {
+  const totalPages = Math.ceil(filtered.length / BOOKS_PER_PAGE);
+  if (page < 1 || page > totalPages) return;
+  currentPage = page;
+  renderBooks();
 }
 
 function card(b,i) {

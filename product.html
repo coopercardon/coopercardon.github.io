@@ -228,29 +228,21 @@
     <div>
       <div class="foot-col-title">Information</div>
       <div class="foot-links">
-        <a href="#" class="foot-link">
+        <a href="/pages/about.html" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           About Us
         </a>
-        <a href="#" class="foot-link">
+        <a href="/pages/hOrder.html" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           How to Order
         </a>
-        <a href="#" class="foot-link">
+        <a href="/pages/delivery.html" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           Delivery Info
         </a>
-        <a href="#" class="foot-link">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
-          Returns Policy
-        </a>
-        <a href="#" class="foot-link">
+        <a href="/pages/pPolicy.html" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           Privacy Policy
-        </a>
-        <a href="#" class="foot-link">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
-          Terms of Service
         </a>
       </div>
     </div>
@@ -289,6 +281,73 @@
     </div>
   </div>
 </footer>
+
+<!-- ══ CUSTOM ORDER FORM OVERLAY ══ -->
+<div class="order-overlay" id="orderOverlay">
+  <div class="order-backdrop" id="orderBackdrop"></div>
+  <div class="order-modal" id="orderModal">
+    <div class="om-header">
+      <div class="om-header-left">
+        <div class="om-pretitle">buuks.in — Checkout</div>
+        <div class="om-title">Complete Your Order</div>
+      </div>
+      <button class="om-close" id="omClose">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="12" y2="12"/><line x1="12" y1="1" x2="1" y2="12"/></svg>
+      </button>
+    </div>
+
+    <!-- Cart summary -->
+    <div class="om-cart-summary" id="omCartSummary"></div>
+
+    <!-- Customer form -->
+    <div class="om-form" id="omForm">
+      <div class="om-row">
+        <div class="om-field">
+          <label class="om-label">Full Name <span>*</span></label>
+          <input class="om-input" id="omName" type="text" placeholder="e.g. Rahul Sharma" autocomplete="name"/>
+        </div>
+        <div class="om-field">
+          <label class="om-label">Phone / WhatsApp <span>*</span></label>
+          <input class="om-input" id="omPhone" type="tel" placeholder="e.g. 9830012345" autocomplete="tel"/>
+        </div>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Email Address <span>*</span></label>
+        <input class="om-input" id="omEmail" type="email" placeholder="e.g. rahul@email.com" autocomplete="email"/>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Delivery Address <span>*</span></label>
+        <textarea class="om-textarea" id="omAddress" placeholder="House/Flat No., Street, Area, City, PIN Code" rows="3" autocomplete="street-address"></textarea>
+      </div>
+      <div class="om-field">
+        <label class="om-label">Special Instructions</label>
+        <textarea class="om-textarea" id="omNote" placeholder="Any special requests or delivery instructions…" rows="2"></textarea>
+      </div>
+      <button class="om-submit" id="omSubmit">
+        <div class="om-spinner"></div>
+        <span class="om-btn-text">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Confirm Order
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ORDER SUCCESS OVERLAY ══ -->
+<div class="order-success-overlay" id="orderSuccessOverlay">
+  <div class="os-confetti" id="osConfetti"></div>
+  <div class="os-icon">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <div class="os-label">Order Confirmed</div>
+  <div class="os-title">Your order is placed! 🎉</div>
+  <div class="os-sub" id="os-sub-msg">We've saved your order. Our team will contact you to confirm delivery!</div>
+  <div class="os-order-id" id="osOrderId">Order #BK000001</div>
+  <button class="os-back" id="osBackBtn">Continue Shopping</button>
+</div>
 
 <!-- JSON-LD STRUCTURED DATA PLACEHOLDER -->
 <script type="application/ld+json" id="bookSchemaScript">

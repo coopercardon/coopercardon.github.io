@@ -9,6 +9,171 @@ let currentBook = null;
 function $(id) { return document.getElementById(id); }
 function esc(s) { const div = document.createElement('div'); div.textContent = s; return div.innerHTML; }
 
+function px(b) {
+  return parseFloat((b.price || '0').replace(/,/g, '').replace(/[^\d.]/g, '')) || 0;
+}
+
+/* ══ CUSTOM ORDER FORM - SAME AS INDEX.HTML ══ */
+function openOrderForm() {
+  const items = Object.values(cart);
+  if (!items.length) return;
+
+  // Build cart summary - same format as index.html
+  let summaryHtml = items.map(({book:b, qty}) => {
+    const img = b.cover_url || (b.isbn ? `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg` : '');
+    return `<div class="om-cart-item">
+      ${img ? `<img class="om-ci-img" src="${esc(img)}" onerror="this.style.display='none'"/>` : '<div class="om-ci-img"></div>'}
+      <div class="om-ci-info">
+        <div class="om-ci-title">${esc(b.title)}</div>
+        <div class="om-ci-meta">${esc(b.author||'')} · Qty: ${qty}</div>
+      </div>
+      <div class="om-ci-price">${qty>1?`₹${px(b)*qty} <small style='font-weight:400;font-size:0.72rem;opacity:0.7'>(${esc(b.price||'')} × ${qty})</small>`:`${esc(b.price||'—')}`}</div>
+    </div>`;
+  }).join('');
+
+  const subtotal  = items.reduce((s,i) => s + px(i.book)*i.qty, 0);
+  const delivery  = subtotal >= 499 ? 0 : 50;
+  const grandTotal = subtotal + delivery;
+  summaryHtml += `
+    <div class="om-total-row" style="border-top:1px solid var(--border);">
+      <span style="font-weight:500;color:var(--text-secondary)">Subtotal</span><span style="color:var(--text-primary)">₹${subtotal.toFixed(0)}</span>
+    </div>
+    <div class="om-total-row" style="border-top:1px solid var(--border);">
+      <span style="font-weight:500;color:var(--text-secondary)">Delivery</span>
+      <span style="color:${delivery===0?'var(--green)':'var(--text-secondary)'};font-weight:700">${delivery===0?'FREE 🎉':'₹50'}</span>
+    </div>
+    <div class="om-total-row" style="border-top:2px solid var(--border);background:var(--accent-bg);">
+      <span>Total Payable</span><span>₹${grandTotal.toFixed(0)}</span>
+    </div>
+    <div style="padding:0.5rem 1rem;background:var(--amber-bg);border-top:1px solid rgba(217,119,6,0.15);font-size:0.76rem;font-weight:600;color:var(--amber);text-align:center;">
+      💵 Cash on Delivery · Pay when your books arrive
+    </div>`;
+  
+  $('omCartSummary').innerHTML = summaryHtml;
+
+  // Clear form
+  ['omName','omPhone','omEmail','omAddress'].forEach(id => $( id).classList.remove('error'));
+  $('omSubmit').disabled = false;
+  $('omSubmit').classList.remove('loading');
+  $('omSubmit').querySelector('.om-btn-text').innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Confirm Order`;
+
+  // Close cart and show order form
+  $('cartOverlay').classList.remove('open');
+  $('orderOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => $('omName').focus(), 350);
+}
+
+function closeOrderForm() {
+  $('orderOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+async function submitOrder() {
+  // Validate
+  const name    = $('omName').value.trim();
+  const phone   = $('omPhone').value.trim();
+  const email   = $('omEmail').value.trim();
+  const address = $('omAddress').value.trim();
+  const note    = $('omNote').value.trim();
+  let valid = true;
+
+  [['omName', name], ['omPhone', phone], ['omEmail', email], ['omAddress', address]].forEach(([id, val]) => {
+    if (!val) { $(id).classList.add('error'); valid = false; }
+    else $(id).classList.remove('error');
+  });
+  if (!valid) { showToast('Please fill all required fields'); return; }
+
+  // Loading state
+  const btn = $('omSubmit');
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  // Build order payload
+  const items     = Object.values(cart);
+  const titles    = items.map(i => `${i.book.title} (x${i.qty})`).join(', ');
+  const isbns     = items.map(i => `${i.book.isbn||'—'} (x${i.qty})`).join(', ');
+  const totalQty  = items.reduce((s,i) => s + i.qty, 0);
+  const subAmt    = items.reduce((s,i) => s + px(i.book)*i.qty, 0);
+  const delAmt    = subAmt >= 499 ? 0 : 50;
+  const totalAmt  = subAmt + delAmt;
+  const orderId   = generateOrderId();
+  const timestamp = new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'});
+
+  const payload = { orderId, timestamp, name, phone, email, address, note, titles, isbns, totalQty,
+    subtotal: `₹${subAmt.toFixed(0)}`, delivery: delAmt===0?'FREE':`₹${delAmt}`, totalAmt: `₹${totalAmt.toFixed(0)}` };
+
+  closeOrderForm();
+  showSuccessScreen(orderId, true);
+  cart = {};
+  saveCartToStorage();
+  updateCartUI();
+  updateCartCount();
+}
+
+function showSuccessScreen(orderId, demoMode) {
+  $('osOrderId').textContent = `Order #${orderId}`;
+  $('os-sub-msg').textContent = demoMode
+    ? '⚠️ Apps Script not set up yet — order not saved to sheet. Deploy the Apps Script to start saving real orders.'
+    : "We've saved your order in the sheet. Our team will contact you to confirm delivery!";
+  launchConfetti();
+  $('orderSuccessOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSuccessScreen() {
+  $('orderSuccessOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function generateOrderId() {
+  const now    = new Date();
+  const yy     = now.getFullYear().toString().slice(-2);
+  const mm     = String(now.getMonth()+1).padStart(2,'0');
+  const dd     = String(now.getDate()).padStart(2,'0');
+  const hh     = String(now.getHours()).padStart(2,'0');
+  const min    = String(now.getMinutes()).padStart(2,'0');
+  const sec    = String(now.getSeconds()).padStart(2,'0');
+  const rand   = Math.random().toString(36).substring(2,5).toUpperCase();
+  return `BK-${yy}${mm}${dd}-${hh}${min}${sec}-${rand}`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+function launchConfetti() {
+  const container = $('osConfetti');
+  if(!container) return;
+  container.innerHTML = '';
+  const colors = ['#6366f1','#15a05b','#f59e0b','#e5495e','#06b6d4','#a78bfa','#34d399','#fb923c'];
+  for (let i = 0; i < 65; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'cdot';
+    const size = Math.random() * 9 + 5;
+    dot.style.cssText = `
+      left:${Math.random()*100}%;
+      width:${size}px;height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*2+1.8}s;
+      animation-delay:${Math.random()*0.7}s;
+      border-radius:${Math.random()>0.4?'50%':'3px'};
+      opacity:1;
+    `;
+    dot.style.position = 'fixed';
+    dot.style.top = '-10px';
+    dot.style.pointerEvents = 'none';
+    dot.style.animation = `fall ${Math.random()*2+1.8}s linear forwards`;
+    container.appendChild(dot);
+  }
+}
+
 function isAvail(val) {
   const v = (val||'').toString().trim().toLowerCase();
   return v === 'yes' || v === 'y' || v === 'true' || v === '1';
@@ -344,7 +509,12 @@ function orderNow() {
     saveCartToStorage();
   }
   updateCartCount();
-  window.location.href = 'pages/hOrder.html';
+  
+  // Just open cart sidebar - that's it
+  $('cartOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderCart();
+  updateCartUI();
 }
 
 function updateCartUI() {
@@ -517,18 +687,24 @@ function renderCart() {
     btn.addEventListener('click', ()=>{ removeFromCart(btn.dataset.key); });
   });
 
-  // Calculate summary
-  const total = Object.values(cart).reduce((s,i)=>s+(parseFloat(i.book.price||0)*i.qty), 0);
+  // Calculate summary - Fix NaN issue by properly extracting price numbers
+  const total = Object.values(cart).reduce((s, i) => {
+    // Extract numeric price value from price string like "₹350" or "₹299"
+    const priceStr = (i.book.price || '0').toString();
+    const priceNum = parseFloat(priceStr.replace(/[^\d.]/g, '')) || 0;
+    return s + (priceNum * (i.qty || 1));
+  }, 0);
+  
   const count = Object.keys(cart).length;
   const delivery = total >= 499 ? 0 : 50;
   
   $('cartSumItems').textContent = count;
-  $('cartSumTotal').textContent = '₹' + total.toFixed(0);
+  $('cartSumTotal').textContent = '₹' + Math.round(total);
   $('cartDelivery').textContent = delivery === 0 ? 'FREE' : '₹' + delivery;
-  $('cartGrandTotal').textContent = '₹' + (total + delivery).toFixed(0);
+  $('cartGrandTotal').textContent = '₹' + Math.round(total + delivery);
 
   if (total < 499 && delivery > 0) {
-    $('freeAmt').textContent = '₹' + (499 - total).toFixed(0);
+    $('freeAmt').textContent = '₹' + Math.round(499 - total);
     $('freeTip').style.display = 'block';
   } else {
     $('freeTip').style.display = 'none';
@@ -569,12 +745,9 @@ window.addEventListener('beforeunload', () => {
   saveCartToStorage();
 });
 
-// Checkout button
+// Checkout button - same behavior as index.html
 if($('checkoutFormBtn')) {
-  $('checkoutFormBtn').addEventListener('click', () => {
-    saveCartToStorage();
-    window.location.href = 'pages/hOrder.html';
-  });
+  $('checkoutFormBtn').addEventListener('click', openOrderForm);
 }
 
 // Clear cart button
@@ -590,6 +763,42 @@ if($('clearCartBtn')) {
     }
   });
 }
+
+// Order form event listeners
+if($('omClose')) {
+  $('omClose').addEventListener('click', closeOrderForm);
+}
+if($('orderBackdrop')) {
+  $('orderBackdrop').addEventListener('click', closeOrderForm);
+}
+if($('omSubmit')) {
+  $('omSubmit').addEventListener('click', submitOrder);
+}
+if($('osBackBtn')) {
+  $('osBackBtn').addEventListener('click', closeSuccessScreen);
+}
+
+// Cart overlay listeners
+if($('cartClose')) {
+  $('cartClose').addEventListener('click', () => {
+    $('cartOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+}
+if($('cartBackdrop')) {
+  $('cartBackdrop').addEventListener('click', () => {
+    $('cartOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  });
+}
+
+// Allow Enter key in form fields
+['omName','omPhone','omEmail'].forEach(id => {
+  const el = $(id);
+  if(el) {
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') submitOrder(); });
+  }
+});
 
 // Focus on cart when overlay opens
 window.addEventListener('focus', () => {
