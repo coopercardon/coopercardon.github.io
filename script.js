@@ -34,6 +34,22 @@ function isAvail(val) {
 let allBooks = [], filtered = [];
 let cart = {}; // { isbn: { book, qty } }
 
+/* ── CART PERSISTENCE ── */
+function loadCartFromStorage() {
+  try {
+    const stored = localStorage.getItem('buuksCart');
+    if(stored) cart = JSON.parse(stored);
+  } catch (e) {
+    cart = {};
+  }
+}
+
+function saveCartToStorage() {
+  try {
+    localStorage.setItem('buuksCart', JSON.stringify(cart));
+  } catch (e) {}
+}
+
 /* ── DATA LOADING ── */
 function sheetUrl() {
   const bust = '&t=' + Date.now(); // cache buster — forces fresh data every load
@@ -56,8 +72,9 @@ function parseCSV(txt) {
 }
 
 async function loadBooks() {
-  if (IS_DEMO) { document.getElementById('setupNotice').style.display='block'; allBooks=DEMO; boot(); return; }
+  if (IS_DEMO) { document.getElementById('setupNotice').style.display='block'; allBooks=DEMO; loadCartFromStorage(); boot(); return; }
   try {
+    loadCartFromStorage(); // Load cart from localStorage first
     const r = await fetch(sheetUrl(), { cache: 'no-store' });
     allBooks = parseCSV(await r.text());
     boot();
@@ -66,7 +83,12 @@ async function loadBooks() {
   }
 }
 
-function boot() { buildFilters(); applyFilters(); updateStats(); }
+function boot() { 
+  buildFilters(); 
+  applyFilters(); 
+  updateStats(); 
+  updateCartUI();  // Render cart on page load
+}
 
 function updateStats() {
   const t=allBooks.length, g=new Set(allBooks.map(b=>b.genre).filter(Boolean)).size;
@@ -331,17 +353,20 @@ function toggleCart(book, btn, isDetail=false) {
       btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1,6 4.5,9.5 11,2"/></svg> Added';
     }
   }
+  saveCartToStorage();
   updateCartUI();
 }
 
 function changeQty(key, delta) {
   if (!cart[key]) return;
   cart[key].qty = Math.max(1, cart[key].qty + delta);
+  saveCartToStorage();
   renderCart();
 }
 
 function removeFromCart(key) {
   delete cart[key];
+  saveCartToStorage();
   updateCartUI();
   renderCart();
   renderBooks();
@@ -660,4 +685,38 @@ document.addEventListener('keydown', e=>{
   }
 });
 
+// Load cart from storage first (BEFORE loadBooks)
+loadCartFromStorage();
+
 loadBooks();
+
+// Auto-open cart if coming from product page with #viewCart hash
+if(window.location.hash === '#viewCart') {
+  setTimeout(() => {
+    // Reload cart in case it was updated on product page
+    loadCartFromStorage();
+    
+    const overlay = $('cartOverlay');
+    if(overlay) {
+      // Render cart with fresh data
+      renderCart();
+      updateCartUI();
+      
+      // Open overlay
+      overlay.classList.add('open');
+      document.body.style.overflow='hidden';
+    }
+    window.history.replaceState(null, '', window.location.pathname);
+  }, 800);
+}
+
+// Save cart to localStorage before page unload
+window.addEventListener('beforeunload', () => {
+  saveCartToStorage();
+});
+
+// Sync cart with other pages when returning to this page
+window.addEventListener('focus', () => {
+  loadCartFromStorage();
+  updateCartCount();
+});
