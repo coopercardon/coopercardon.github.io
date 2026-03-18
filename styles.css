@@ -150,9 +150,38 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background-color:var(--bg);backg
 }
 .cart-count.show{display:flex}
 
+/* Mobile Menu Button */
+.mobile-menu-btn{
+  display:none;width:36px;height:36px;
+  border:1.5px solid var(--border2);background:var(--white);border-radius:8px;
+  cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+  padding:0;transition:all 0.2s;flex-shrink:0;z-index:1;
+}
+.mobile-menu-btn span{
+  width:18px;height:2px;background:var(--text);border-radius:1px;transition:all 0.3s;
+}
+.mobile-menu-btn:hover{border-color:var(--accent)}
+.mobile-menu-btn.active span:nth-child(1){transform:rotate(45deg) translate(8px,8px)}
+.mobile-menu-btn.active span:nth-child(2){opacity:0}
+.mobile-menu-btn.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-7px)}
+
+/* Mobile Nav */
+.mobile-nav{
+  display:none;position:absolute;top:60px;left:0;right:0;
+  background:var(--white);border-bottom:1px solid var(--border);z-index:200;
+  flex-direction:column;
+}
+.mobile-nav.open{display:flex}
+.mobile-nav a{
+  padding:1rem 1.5rem;color:var(--text2);text-decoration:none;
+  font-weight:500;border-bottom:1px solid var(--border);transition:all 0.2s;
+}
+.mobile-nav a:hover{background:var(--surface);color:var(--accent)}
+
 /* mobile */
 @media(max-width:768px){
   .nav-links{display:none !important}
+  .mobile-menu-btn{display:flex}
   .topbar{padding:0 1rem;height:54px;gap:0.5rem}
   .top-count{display:none}
   .top-search{max-width:150px}
