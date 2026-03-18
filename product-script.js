@@ -427,16 +427,105 @@ function renderError(title, message) {
   `;
 }
 
-$('cartBtn').addEventListener('click', () => {
+function changeQty(key, delta) {
+  if (!cart[key]) return;
+  cart[key].qty = Math.max(1, cart[key].qty + delta);
+  saveCartToStorage();
+  renderCart();
+}
+
+function removeFromCart(key) {
+  delete cart[key];
+  saveCartToStorage();
+  updateCartUI();
+  renderCart();
+  updateCartCount();
+}
+
+function renderCart() {
+  const items = Object.values(cart);
+  const cartItems = $('cartItems');
+  const cartFooter = $('cartFooter');
+  
+  if (!items.length) {
+    cartItems.innerHTML = `<div class="cart-empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <p>Your cart is empty</p><small>Tap a book to add it to your cart</small>
+    </div>`;
+    cartFooter.style.display = 'none';
+    return;
+  }
+  
+  cartFooter.style.display = 'flex';
+  cartItems.innerHTML = items.map(({book: b, qty}) => {
+    const key = b.isbn || b.title;
+    const img = b.cover_url || (b.isbn ? `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg` : '');
+    return `<div class="cart-item">
+      ${img ? `<img class="cart-item-img" src="${esc(img)}" alt="${esc(b.title)}" onerror="this.style.display='none'"/>` : '<div class="cart-item-img"></div>'}
+      <div class="cart-item-info">
+        <div class="cart-item-title">${esc(b.title)}</div>
+        <div class="cart-item-author">${esc(b.author||'')}</div>
+        <div class="cart-item-price">${esc(b.price||'—')}</div>
+        <div class="cart-item-actions">
+          <button class="qty-btn" data-key="${esc(key)}" data-d="-1">−</button>
+          <span class="qty-num">${qty}</span>
+          <button class="qty-btn" data-key="${esc(key)}" data-d="1">+</button>
+          <button class="cart-item-remove" data-key="${esc(key)}">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="1" y1="1" x2="10" y2="10"/><line x1="10" y1="1" x2="1" y2="10"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Qty buttons
+  cartItems.querySelectorAll('.qty-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ changeQty(btn.dataset.key, +btn.dataset.d); });
+  });
+  cartItems.querySelectorAll('.cart-item-remove').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ removeFromCart(btn.dataset.key); });
+  });
+
+  // Calculate summary
+  const total = Object.values(cart).reduce((s,i)=>s+(parseFloat(i.book.price||0)*i.qty), 0);
+  const count = Object.keys(cart).length;
+  const delivery = total >= 499 ? 0 : 50;
+  
+  $('cartSumItems').textContent = count;
+  $('cartSumTotal').textContent = '₹' + total.toFixed(0);
+  $('cartDelivery').textContent = delivery === 0 ? 'FREE' : '₹' + delivery;
+  $('cartGrandTotal').textContent = '₹' + (total + delivery).toFixed(0);
+
+  if (total < 499 && delivery > 0) {
+    $('freeAmt').textContent = '₹' + (499 - total).toFixed(0);
+    $('freeTip').style.display = 'block';
+  } else {
+    $('freeTip').style.display = 'none';
+  }
+}
+
+
   saveCartToStorage();
   if(Object.keys(cart).length > 0) {
-    // Small delay to ensure cart is saved before redirect
-    setTimeout(() => {
-      window.location.href = 'index.html#viewCart';
-    }, 100);
+    $('cartOverlay').classList.add('open');
+    document.body.style.overflow='hidden';
+    renderCart();
+    updateCartUI();
   } else {
     alert('Your cart is empty');
   }
+});
+
+// Cart close button handler
+$('cartClose').addEventListener('click', () => {
+  $('cartOverlay').classList.remove('open');
+  document.body.style.overflow='';
+});
+
+// Cart backdrop close handler
+$('cartBackdrop').addEventListener('click', () => {
+  $('cartOverlay').classList.remove('open');
+  document.body.style.overflow='';
 });
 
 loadBooks();
@@ -446,8 +535,33 @@ window.addEventListener('beforeunload', () => {
   saveCartToStorage();
 });
 
-// Sync cart with other pages if this window is refocused
+// Checkout button
+if($('checkoutFormBtn')) {
+  $('checkoutFormBtn').addEventListener('click', () => {
+    saveCartToStorage();
+    window.location.href = 'pages/hOrder.html';
+  });
+}
+
+// Clear cart button
+if($('clearCartBtn')) {
+  $('clearCartBtn').addEventListener('click', () => {
+    if(confirm('Are you sure you want to clear your cart?')) {
+      cart = {};
+      saveCartToStorage();
+      updateCartUI();
+      renderCart();
+      $('cartOverlay').classList.remove('open');
+      document.body.style.overflow='';
+    }
+  });
+}
+
+// Focus on cart when overlay opens
 window.addEventListener('focus', () => {
   loadCartFromStorage();
-  updateCartCount();
+  if($('cartOverlay').classList.contains('open')) {
+    renderCart();
+    updateCartUI();
+  }
 });
