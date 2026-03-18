@@ -821,3 +821,27 @@ window.addEventListener('focus', () => {
     updateCartUI();
   }
 });
+
+/* ══ MOBILE MENU ══ */
+function initMobileMenu() {
+  const mobileMenuBtn = $('mobileMenuBtn');
+  const mobileNav = $('mobileNav');
+  
+  if (!mobileMenuBtn) return;
+  
+  mobileMenuBtn.addEventListener('click', function() {
+    this.classList.toggle('active');
+    mobileNav.classList.toggle('open');
+  });
+  
+  // Close menu when link clicked
+  const mobileLinks = mobileNav.querySelectorAll('a');
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      mobileMenuBtn.classList.remove('active');
+      mobileNav.classList.remove('open');
+    });
+  });
+}
+
+initMobileMenu();
