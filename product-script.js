@@ -41,12 +41,23 @@ function parseCSV(txt) {
 
 async function loadBooks() {
   try {
-    const r = await fetch(sheetUrl(), { cache: 'no-store' });
-    allBooks = parseCSV(await r.text());
+    console.log('Fetching books from Google Sheet...');
+    
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Loading took too long')), 15000)
+    );
+    
+    const fetchPromise = fetch(sheetUrl(), { cache: 'no-store' }).then(r => r.text());
+    const result = await Promise.race([fetchPromise, timeoutPromise]);
+    
+    allBooks = parseCSV(result);
+    console.log('Books loaded:', allBooks.length);
     loadCartFromStorage();
     initPage();
   } catch (e) {
-    renderError('Failed to load book data', 'Please try refreshing the page.');
+    console.error('Error loading books:', e);
+    renderError('Failed to load book data', 'Please try refreshing the page. Error: ' + e.message);
   }
 }
 
@@ -88,7 +99,15 @@ async function fetchMarkdownDescription(descriptionUrl) {
     }
     
     console.log('Fetching from URL:', descriptionUrl);
-    const response = await fetch(descriptionUrl);
+    
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Description fetch timeout')), 8000)
+    );
+    
+    const fetchPromise = fetch(descriptionUrl);
+    const response = await Promise.race([fetchPromise, timeoutPromise]);
+    
     console.log('Fetch response status:', response.status, response.ok);
     
     if(!response.ok) {
@@ -122,11 +141,17 @@ function parseMarkdown(mdText) {
 
 function initPage() {
   const book = findBook();
+  console.log('Finding book with ISBN from URL...');
+  console.log('All books loaded:', allBooks.length);
+  console.log('Looking for ISBN:', getURLParam('isbn'));
+  
   if(!book) {
+    console.log('Book not found!');
     renderError('Book not found', 'The book you are looking for does not exist or has been removed.');
     return;
   }
   currentBook = book;
+  console.log('Book found:', book.title);
   renderProduct(book);
   updateMetaTags(book);
   updateSchemaData(book);
@@ -529,6 +554,8 @@ $('cartBackdrop').addEventListener('click', () => {
 });
 
 loadBooks();
+
+console.log('Product page initialized. Waiting for books to load...');
 
 // Save cart to localStorage before page unload (for persistence on refresh)
 window.addEventListener('beforeunload', () => {
