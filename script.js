@@ -34,10 +34,6 @@ function isAvail(val) {
 let allBooks = [], filtered = [];
 let cart = {}; // { isbn: { book, qty } }
 
-/* ── PAGINATION ── */
-const BOOKS_PER_PAGE = 20;
-let currentPage = 1;
-
 /* ── DATA LOADING ── */
 function sheetUrl() {
   const bust = '&t=' + Date.now(); // cache buster — forces fresh data every load
@@ -107,10 +103,7 @@ function applyFilters() {
     if(sort==='price_desc') return px(b)-px(a);
     return 0;
   });
-  currentPage = 1; // Reset to first page on filter change
-  drawTags(q,genre,lang,avail); 
-  renderBooks();
-  renderPaginationControls();
+  drawTags(q,genre,lang,avail); renderBooks();
   const total=allBooks.length, cnt=filtered.length;
   $('rtext').innerHTML=cnt===total?`Showing all <strong>${total}</strong> books`:`<strong>${cnt}</strong> of <strong>${total}</strong> books`;
 }
@@ -129,110 +122,14 @@ function drawTags(q,genre,lang,avail){
   ['genreFilter','langFilter','availFilter'].forEach(id=>{const el=$(id);el.classList.toggle('on',!!el.value)});
 }
 
-/* ── PAGINATION ── */
-function getTotalPages() {
-  return Math.ceil(filtered.length / BOOKS_PER_PAGE);
-}
-
-function getPaginatedBooks() {
-  const start = (currentPage - 1) * BOOKS_PER_PAGE;
-  const end = start + BOOKS_PER_PAGE;
-  return filtered.slice(start, end);
-}
-
-function renderPaginationControls() {
-  const totalPages = getTotalPages();
-  const paginationContainer = $('paginationContainer');
-  
-  if (totalPages <= 1) {
-    paginationContainer.style.display = 'none';
-    return;
-  }
-  
-  paginationContainer.style.display = 'flex';
-  
-  // Generate page numbers with ellipsis for large page counts
-  let pageNumbers = [];
-  const maxVisible = 7;
-  
-  if (totalPages <= maxVisible) {
-    // Show all pages
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(i);
-    }
-  } else {
-    // Show first page, current page range, and last page
-    pageNumbers.push(1);
-    
-    const start = Math.max(2, currentPage - 2);
-    const end = Math.min(totalPages - 1, currentPage + 2);
-    
-    if (start > 2) pageNumbers.push('...');
-    
-    for (let i = start; i <= end; i++) {
-      pageNumbers.push(i);
-    }
-    
-    if (end < totalPages - 1) pageNumbers.push('...');
-    pageNumbers.push(totalPages);
-  }
-  
-  // Render page buttons
-  const pagesList = $('pagesList');
-  pagesList.innerHTML = pageNumbers.map(p => {
-    if (p === '...') {
-      return `<span class="page-ellipsis">…</span>`;
-    }
-    return `<button class="page-num ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`;
-  }).join('');
-  
-  // Attach click handlers
-  pagesList.querySelectorAll('.page-num').forEach(btn => {
-    btn.addEventListener('click', () => {
-      goToPage(parseInt(btn.dataset.page));
-    });
-  });
-  
-  // Update prev/next buttons
-  $('prevPageBtn').disabled = currentPage === 1;
-  $('nextPageBtn').disabled = currentPage === totalPages;
-  
-  // Update page info
-  const start = (currentPage - 1) * BOOKS_PER_PAGE + 1;
-  const end = Math.min(currentPage * BOOKS_PER_PAGE, filtered.length);
-  $('pageInfo').innerHTML = `Page ${currentPage} of ${totalPages} <span class="page-info-count">(${start}–${end} of ${filtered.length})</span>`;
-}
-
-function goToPage(page) {
-  const totalPages = getTotalPages();
-  if (page < 1 || page > totalPages || page === currentPage) return;
-  currentPage = page;
-  renderBooks();
-  renderPaginationControls();
-  // Scroll to top of catalog
-  document.getElementById('catalog').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function goToPreviousPage() {
-  goToPage(currentPage - 1);
-}
-
-function goToNextPage() {
-  goToPage(currentPage + 1);
-}
-
-
 /* ── RENDER CATALOG ── */
 function renderBooks() {
   const catalog=$('catalog');
-  const paginatedBooks = getPaginatedBooks();
-  
-  if(!paginatedBooks.length && filtered.length === 0){
+  if(!filtered.length){
     catalog.innerHTML=`<div class="statebox"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".25"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>No books found</p><small>Try adjusting your search or filters</small></div>`;
     return;
   }
-  
-  catalog.innerHTML=paginatedBooks.map((b,i)=>card(b,i)).join('');
+  catalog.innerHTML=filtered.map((b,i)=>card(b,i)).join('');
   // re-attach click handlers
   catalog.querySelectorAll('.bcard').forEach(el=>{
     const isbn=el.dataset.isbn;
@@ -251,34 +148,15 @@ function renderBooks() {
   });
 }
 
-/* ── COVER URL HELPERS ── */
-function cleanCoverUrl(url) {
-  if (!url) return '';
-  // Trim whitespace
-  url = (url || '').trim();
-  // Ensure it's a proper URL (starts with http/https)
-  if (url && !url.match(/^https?:\/\//i)) {
-    console.warn('Invalid URL format (must start with http/https):', url);
-    return '';
-  }
-  return url;
-}
-
 function card(b,i) {
   const avail  = isAvail(b.available);
   const isbn   = (b.isbn||'').replace(/[^0-9X]/gi,'').trim(); // strip spaces/dashes
-  
-  // Clean and validate cover_url
-  const customCoverUrl = cleanCoverUrl(b.cover_url);
-  
-  // Try custom URL first, then Open Library as fallback
-  const imgSrc = customCoverUrl || (isbn ? `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg` : '');
-  
-  // Debug: Log cover attempts (remove after testing)
-  if (customCoverUrl && i < 3) {
-    console.log(`📚 Book ${i+1} (${b.title}): Using cover URL:`, customCoverUrl);
-  }
-  
+  // Try cover_url first, then Open Library (two sizes as fallback)
+  const imgSrc = b.cover_url
+    ? b.cover_url
+    : isbn
+      ? `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`
+      : '';
   const delay  = Math.min(i*30,450);
   const inCart = !!cart[b.isbn||b.title];
 
@@ -333,17 +211,21 @@ function card(b,i) {
 
 /* ── DETAIL PAGE ── */
 function openDetail(isbn) {
+  // Redirect to product page in new tab for better SEO and shareability
+  const b = allBooks.find(x => (x.isbn||x.title) === isbn);
+  if (!b) return;
+  window.open(`product.html?isbn=${encodeURIComponent(b.isbn||b.title)}`, '_blank');
+  return;
+}
+
+function openDetailModal_backup(isbn) {
   const b = allBooks.find(x => (x.isbn||x.title) === isbn);
   if (!b) return;
   const avail     = isAvail(b.available);
   const cleanIsbn = (b.isbn||'').replace(/[^0-9X]/gi,'').trim();
-  
-  // Use cleaned cover URL with fallback to Open Library
-  const customCoverUrl = cleanCoverUrl(b.cover_url);
-  const imgSrc = customCoverUrl || (cleanIsbn ? `https://covers.openlibrary.org/b/isbn/${cleanIsbn}-L.jpg` : '');
-  
-  console.log(`📖 Detail view - ${b.title}: Cover URL =`, imgSrc);
-  
+  const imgSrc = b.cover_url
+    ? b.cover_url
+    : cleanIsbn ? `https://covers.openlibrary.org/b/isbn/${cleanIsbn}-L.jpg` : '';
   const inCart = !!cart[isbn];
   const formHref = buildSingleForm(b);
 
@@ -489,8 +371,7 @@ function renderCart() {
   cartFooter.style.display = 'flex';
   cartItems.innerHTML = items.map(({book: b, qty}) => {
     const key = b.isbn || b.title;
-    const customCoverUrl = cleanCoverUrl(b.cover_url);
-    const img = customCoverUrl || (b.isbn ? `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg` : '');
+    const img = b.cover_url || (b.isbn ? `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg` : '');
     return `<div class="cart-item">
       ${img ? `<img class="cart-item-img" src="${esc(img)}" alt="${esc(b.title)}" onerror="this.style.display='none'"/>` : '<div class="cart-item-img"></div>'}
       <div class="cart-item-info">
@@ -559,8 +440,7 @@ function openOrderForm() {
 
   // Cart summary rows
   let summaryHtml = items.map(({book:b, qty}) => {
-    const customCoverUrl = cleanCoverUrl(b.cover_url);
-    const img = customCoverUrl || (b.isbn ? `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg` : '');
+    const img = b.cover_url || (b.isbn ? `https://covers.openlibrary.org/b/isbn/${b.isbn}-M.jpg` : '');
     return `<div class="om-cart-item">
       ${img ? `<img class="om-ci-img" src="${esc(img)}" onerror="this.style.display='none'"/>` : '<div class="om-ci-img"></div>'}
       <div class="om-ci-info">
@@ -765,10 +645,6 @@ $('clearCartBtn').addEventListener('click', ()=>{
   renderBooks();
   showToast('Cart cleared');
 });
-
-// Pagination
-$('prevPageBtn').addEventListener('click', goToPreviousPage);
-$('nextPageBtn').addEventListener('click', goToNextPage);
 
 $('mobFilterBtn').addEventListener('click', ()=>{
   $('filterBar').scrollIntoView({ behavior:'smooth', block:'start' });
