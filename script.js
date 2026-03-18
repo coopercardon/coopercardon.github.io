@@ -654,7 +654,9 @@ async function submitOrder() {
 
 function showSuccessScreen(orderId, demoMode=false) {
   $('osOrderId').textContent = `Order #${orderId}`;
-  $('os-sub-msg').textContent = "We've saved your order. Our team will contact you to confirm delivery!";
+  $('os-sub-msg').textContent = demoMode
+    ? '⚠️ Apps Script not set up yet — order not saved to sheet. Deploy the Apps Script to start saving real orders.'
+    : "We've saved your order in the sheet. Our team will contact you to confirm delivery!";
   launchConfetti();
   $('orderSuccessOverlay').classList.add('show');
   document.body.style.overflow = 'hidden';
