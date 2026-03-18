@@ -27,6 +27,12 @@
     </div>
     <span class="logo-name">buuks<span>.in</span></span>
   </a>
+  <nav class="nav-links">
+    <a href="pages/about.html" class="nav-link">About Us</a>
+    <a href="pages/hOrder.html" class="nav-link">How to Order</a>
+    <a href="pages/delivery.html" class="nav-link">Delivery Info</a>
+    <a href="pages/pPolicy.html" class="nav-link">Policy</a>
+  </nav>
   <div class="top-search">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="search" id="searchInput" placeholder="Search title, author, ISBN…"/>
@@ -187,20 +193,6 @@
 <main id="catalog">
   <div class="statebox"><div class="spinner"></div><p>Loading library…</p></div>
 </main>
-
-<!-- ══ PAGINATION CONTROLS ══ -->
-<div class="pagination-container" id="paginationContainer">
-  <div class="pagination-wrap">
-    <button class="page-btn prev-btn" id="prevPageBtn" title="Previous page">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-    </button>
-    <div class="pages-list" id="pagesList"></div>
-    <button class="page-btn next-btn" id="nextPageBtn" title="Next page">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </button>
-  </div>
-  <div class="page-info" id="pageInfo"></div>
-</div>
 
 <button class="mob-filter-btn" id="mobFilterBtn">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
@@ -398,21 +390,29 @@
     <div>
       <div class="foot-col-title">Information</div>
       <div class="foot-links">
-        <a href="/pages/about.html" class="foot-link">
+        <a href="#" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           About Us
         </a>
-        <a href="pages/hOrder.html" class="foot-link">
+        <a href="#" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           How to Order
         </a>
-        <a href="pages/delivery.html" class="foot-link">
+        <a href="#" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           Delivery Info
         </a>
-        <a href="pages/pPolicy.html" class="foot-link">
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Returns Policy
+        </a>
+        <a href="#" class="foot-link">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
           Privacy Policy
+        </a>
+        <a href="#" class="foot-link">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          Terms of Service
         </a>
       </div>
     </div>
@@ -426,7 +426,7 @@
       </div>
       <div class="foot-contact-item">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <!-- <a href="/cdn-cgi/l/email-protection#29414c454546694b5c5c425a074047"><span class="__cf_email__" data-cfemail="234b464f4f4c6341565648500d4a4d">[email&#160;protected]</span></a> -->
+        <a href="/cdn-cgi/l/email-protection#29414c454546694b5c5c425a074047"><span class="__cf_email__" data-cfemail="234b464f4f4c6341565648500d4a4d">[email&#160;protected]</span></a>
       </div>
       <div class="foot-contact-item">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -451,7 +451,7 @@
     </div>
   </div>
 </footer>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="script.js"></script>
-<!-- <script src="upi-payment-secret.js"></script> -->
 </body>
 </html>
