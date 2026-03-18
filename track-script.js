@@ -1,7 +1,11 @@
 /* Track Order Script */
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD_z9H9WKFSxDn8_YtxhxKVh3Bc6kR5hv8aP8u10_SIgB-rSPm5eHaDAN38962o5wZXQ/exec";
 
-function $(id) { return document.getElementById(id); }
+function $(id) { 
+  const el = document.getElementById(id);
+  if (!el) console.warn("Element not found: " + id);
+  return el;
+}
 
 /* Mobile menu toggle */
 document.addEventListener('DOMContentLoaded', function() {
@@ -11,18 +15,20 @@ document.addEventListener('DOMContentLoaded', function() {
   if (mobileMenuBtn) {
     mobileMenuBtn.addEventListener('click', function() {
       this.classList.toggle('active');
-      mobileNav.classList.toggle('open');
+      if (mobileNav) mobileNav.classList.toggle('open');
     });
   }
   
   // Close menu when link clicked
-  const mobileLinks = mobileNav.querySelectorAll('a');
-  mobileLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      mobileMenuBtn.classList.remove('active');
-      mobileNav.classList.remove('open');
+  if (mobileNav) {
+    const mobileLinks = mobileNav.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+        if (mobileNav) mobileNav.classList.remove('open');
+      });
     });
-  });
+  }
   
   // Handle form submission
   const trackForm = $('trackForm');
@@ -32,45 +38,78 @@ document.addEventListener('DOMContentLoaded', function() {
       await searchOrder();
     });
   }
+  
+  // Allow Enter key
+  const orderId = $('orderId');
+  const orderEmail = $('orderEmail');
+  if (orderId) orderId.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') searchOrder();
+  });
+  if (orderEmail) orderEmail.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') searchOrder();
+  });
 });
 
 /* Search order */
 async function searchOrder() {
-  const orderId = $('orderId').value.trim();
-  const orderEmail = $('orderEmail').value.trim();
+  console.log('searchOrder called');
+  
+  const orderId = $('orderId');
+  const orderEmail = $('orderEmail');
   const btn = $('trackBtn');
   const resultsDiv = $('trackResults');
   
   if (!orderId || !orderEmail) {
+    console.error('Form elements not found');
+    showError('Form elements not found. Please refresh the page.');
+    return;
+  }
+  
+  const orderIdValue = orderId.value.trim();
+  const orderEmailValue = orderEmail.value.trim();
+  
+  console.log('Order ID:', orderIdValue);
+  console.log('Email:', orderEmailValue);
+  
+  if (!orderIdValue || !orderEmailValue) {
     showError('Please fill in all fields');
     return;
   }
   
   // Show loading state
-  btn.disabled = true;
-  btn.classList.add('loading');
-  const originalText = btn.innerHTML;
-  btn.innerHTML = '<div class="spinner"></div>Searching...';
+  if (btn) {
+    btn.disabled = true;
+    btn.classList.add('loading');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<div class="spinner"></div>Searching...';
+  }
   
   try {
-    const response = await fetch(
-      APPS_SCRIPT_URL + '?action=track&orderId=' + encodeURIComponent(orderId) + '&email=' + encodeURIComponent(orderEmail)
-    );
+    const url = APPS_SCRIPT_URL + '?action=track&orderId=' + encodeURIComponent(orderIdValue) + '&email=' + encodeURIComponent(orderEmailValue);
+    console.log('Fetching:', url);
+    
+    const response = await fetch(url);
+    console.log('Response status:', response.status);
     
     const data = await response.json();
+    console.log('Response data:', data);
     
     if (data.status === 'success' && data.order) {
+      console.log('Order found:', data.order);
       displayOrder(data.order);
     } else {
+      console.log('Order not found or error:', data.message);
       showError(data.message || 'Order not found. Please check your Order ID and email address.');
     }
   } catch (error) {
-    console.error('Error:', error);
-    showError('An error occurred. Please try again.');
+    console.error('Fetch error:', error);
+    showError('An error occurred: ' + error.message);
   } finally {
-    btn.disabled = false;
-    btn.classList.remove('loading');
-    btn.innerHTML = originalText;
+    if (btn) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Track Order';
+    }
   }
 }
 
@@ -81,13 +120,13 @@ function showError(message) {
   const errorText = $('errorText');
   const orderCard = $('orderCard');
   
-  errorText.textContent = message;
-  errorDiv.style.display = 'block';
-  orderCard.style.display = 'none';
-  resultsDiv.classList.add('show');
-  
-  // Scroll to results
-  resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (errorText) errorText.textContent = message;
+  if (errorDiv) errorDiv.style.display = 'block';
+  if (orderCard) orderCard.style.display = 'none';
+  if (resultsDiv) {
+    resultsDiv.classList.add('show');
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
 /* Display order */
@@ -96,34 +135,48 @@ function displayOrder(order) {
   const errorDiv = $('errorMessage');
   const orderCard = $('orderCard');
   
-  errorDiv.style.display = 'none';
+  if (errorDiv) errorDiv.style.display = 'none';
   
   // Fill order details
-  $('displayOrderId').textContent = order.orderId || '—';
-  $('orderDate').textContent = order.date || '—';
-  $('orderAmount').textContent = order.amount || '—';
-  $('orderName').textContent = order.name || '—';
-  $('orderPhone').textContent = order.phone || '—';
-  $('orderEmail').textContent = order.email || '—';
-  $('orderAddress').textContent = order.address || '—';
-  $('orderBooks').textContent = order.books || '—';
+  const displayOrderId = $('displayOrderId');
+  if (displayOrderId) displayOrderId.textContent = order.orderId || '—';
+  
+  const orderDate = $('orderDate');
+  if (orderDate) orderDate.textContent = order.date || '—';
+  
+  const orderAmount = $('orderAmount');
+  if (orderAmount) orderAmount.textContent = order.amount || '—';
+  
+  const orderName = $('orderName');
+  if (orderName) orderName.textContent = order.name || '—';
+  
+  const orderPhone = $('orderPhone');
+  if (orderPhone) orderPhone.textContent = order.phone || '—';
+  
+  const orderAddress = $('orderAddress');
+  if (orderAddress) orderAddress.textContent = order.address || '—';
+  
+  const orderBooks = $('orderBooks');
+  if (orderBooks) orderBooks.textContent = order.books || '—';
   
   // Show/hide note
+  const noteItem = $('noteItem');
   if (order.note && order.note.trim()) {
-    $('noteItem').style.display = 'block';
-    $('orderNote').textContent = order.note;
+    if (noteItem) noteItem.style.display = 'block';
+    const orderNote = $('orderNote');
+    if (orderNote) orderNote.textContent = order.note;
   } else {
-    $('noteItem').style.display = 'none';
+    if (noteItem) noteItem.style.display = 'none';
   }
   
   // Update status
   updateStatus(order.status || 'New');
   
-  orderCard.style.display = 'block';
-  resultsDiv.classList.add('show');
-  
-  // Scroll to results
-  orderCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (orderCard) orderCard.style.display = 'block';
+  if (resultsDiv) {
+    resultsDiv.classList.add('show');
+    orderCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
 /* Update status display */
@@ -140,8 +193,10 @@ function updateStatus(status) {
   
   // Update badge
   const badgeEl = $('statusBadge');
-  badgeEl.className = 'status-badge ' + statusInfo.badge;
-  badgeEl.innerHTML = `<span class="status-icon">${statusInfo.icon}</span><span id="statusText">${statusInfo.label}</span>`;
+  if (badgeEl) {
+    badgeEl.className = 'status-badge ' + statusInfo.badge;
+    badgeEl.innerHTML = `<span class="status-icon">${statusInfo.icon}</span><span id="statusText">${statusInfo.label}</span>`;
+  }
   
   // Update timeline
   const statuses = ['New', 'Confirmed', 'Packed', 'Shipped', 'Delivered'];
@@ -164,25 +219,18 @@ function updateStatus(status) {
     `;
   });
   
-  $('statusTimeline').innerHTML = timelineHtml;
+  const statusTimeline = $('statusTimeline');
+  if (statusTimeline) statusTimeline.innerHTML = timelineHtml;
 }
 
 /* Reset and search again */
 function resetTrack() {
-  $('orderId').value = '';
-  $('orderEmail').value = '';
-  $('trackResults').classList.remove('show');
-  $('orderId').focus();
+  const orderId = $('orderId');
+  const orderEmail = $('orderEmail');
+  const resultsDiv = $('trackResults');
+  
+  if (orderId) orderId.value = '';
+  if (orderEmail) orderEmail.value = '';
+  if (resultsDiv) resultsDiv.classList.remove('show');
+  if (orderId) orderId.focus();
 }
-
-/* Allow Enter key to submit form */
-document.addEventListener('DOMContentLoaded', function() {
-  const inputs = document.querySelectorAll('#orderId, #orderEmail');
-  inputs.forEach(input => {
-    input.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        searchOrder();
-      }
-    });
-  });
-});
