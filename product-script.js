@@ -219,6 +219,9 @@ async function renderProduct(book) {
     `;
   }
 
+  // Fetch related books BEFORE building template
+  const relatedBooksHtml = await getRelatedBooksHtml(book);
+
   const html = `
     <div class="product-hero">
       <div class="product-cover-box">
@@ -262,7 +265,7 @@ async function renderProduct(book) {
       </div>
     </div>
 
-    ${await getRelatedBooksHtml(book)}
+    ${relatedBooksHtml}
   `;
 
   $('productContent').innerHTML = html;
