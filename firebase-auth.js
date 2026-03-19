@@ -478,7 +478,7 @@ function prepareOrderWithUserInfo(orderData) {
 document.addEventListener('DOMContentLoaded', () => {
   initializeFirebase();
 
-  document.getElementById('signInBtn')?.addEventListener('click', openSignInModal);
+  /* signInBtn click is handled dynamically by updateUIAfterAuth — do not add a static listener here */
   document.getElementById('signinModalClose')?.addEventListener('click', closeSignInModal);
   document.getElementById('signinModalOverlay')?.addEventListener('click', closeSignInModal);
   document.addEventListener('keydown', e => {
