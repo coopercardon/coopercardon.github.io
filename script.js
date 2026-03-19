@@ -52,7 +52,6 @@ function saveCartToStorage() {
   try {
     localStorage.setItem('buuksCart', JSON.stringify(cart));
   } catch (e) {}
-} catch (e) {}
 }
 
 /* ── DATA LOADING ── */
