@@ -655,9 +655,9 @@ async function submitOrder() {
   }
 
   closeOrderForm();
-  // Save order to history for logged-in users
-  if (typeof firebaseAuth !== 'undefined' && firebaseAuth.isUserLoggedIn()) {
-    firebaseAuth.saveOrderToHistory(payload);
+  // Save order to Firestore for cross-device history
+  if (typeof firebaseAuth !== 'undefined') {
+    firebaseAuth.saveOrderToFirestore(payload);
   }
   showSuccessScreen(orderId, !scriptReady);
   cart = {};
