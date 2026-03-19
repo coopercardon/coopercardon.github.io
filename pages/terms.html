@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Conditions — buuks.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --white: #ffffff;
+      --bg: #f5f6fd;
+      --surface: #eceef8;
+      --border: #e0e2f0;
+      --border2: #c9ccdf;
+      --text: #1c1d30;
+      --text2: #52546e;
+      --text3: #9496b2;
+      --accent: #6366f1;
+      --accent-h: #4f52e0;
+      --accent-bg: #eef0ff;
+      --accent-s: #dde0ff;
+      --green: #15a05b;
+      --green-bg: #e8faf2;
+      --sh-sm: 0 1px 4px rgba(28, 29, 48, 0.07);
+      --sh-md: 0 4px 18px rgba(28, 29, 48, 0.09);
+      --sh-lg: 0 12px 40px rgba(28, 29, 48, 0.13);
+      --r: 12px;
+      --r-sm: 8px;
+      --r-lg: 16px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background-color: var(--white);
+      border-bottom: 1.5px solid var(--border);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--sh-sm);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+      flex-shrink: 0;
+    }
+
+    .logo-name {
+      font-size: 1.22rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .logo-name span {
+      color: var(--accent);
+    }
+
+    nav {
+      margin-left: auto;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    nav a {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 7px;
+      transition: all 0.15s;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    /* ── MAIN CONTENT ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .page-header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .page-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      font-size: 1rem;
+      color: var(--text2);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── CONTENT SECTIONS ── */
+    .content-section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--sh-md);
+    }
+
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--accent-bg);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .subsection-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .subsection-title:first-child {
+      margin-top: 0;
+    }
+
+    p, li {
+      font-size: 0.95rem;
+      color: var(--text2);
+      margin-bottom: 1rem;
+      line-height: 1.75;
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.75rem;
+    }
+
+    li::marker {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .highlight {
+      background: var(--accent-bg);
+      border-left: 4px solid var(--accent);
+      padding: 1rem;
+      border-radius: var(--r-sm);
+      margin: 1.5rem 0;
+    }
+
+    .highlight p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--accent-bg);
+      color: var(--accent);
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 700;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      color: var(--text2);
+    }
+
+    tr:nth-child(even) {
+      background: rgba(99, 102, 241, 0.02);
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-h) 100%);
+      color: white;
+      border-radius: var(--r-lg);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin: 3rem 0;
+    }
+
+    .cta-section h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .cta-section p {
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      background: white;
+      color: var(--accent);
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--text);
+      color: rgba(255, 255, 255, 0.55);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── TABLE OF CONTENTS ── */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .toc h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .toc-list {
+      list-style: none;
+      margin: 0;
+    }
+
+    .toc-list li {
+      margin-bottom: 0.5rem;
+    }
+
+    .toc-list a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.15s;
+    }
+
+    .toc-list a:hover {
+      color: var(--accent-h);
+      padding-left: 0.5rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      header {
+        padding: 0 1rem;
+      }
+
+      nav {
+        gap: 0.5rem;
+      }
+
+      nav a {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.5rem;
+      }
+
+      .container {
+        padding: 2rem 1rem;
+      }
+
+      .page-header h1 {
+        font-size: 1.8rem;
+      }
+
+      .content-section {
+        padding: 1.5rem;
+      }
+
+      .section-title {
+        font-size: 1.15rem;
+      }
+
+      .subsection-title {
+        font-size: 0.95rem;
+      }
+
+      p, li {
+        font-size: 0.9rem;
+      }
+
+      .cta-section {
+        padding: 2rem 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .cta-section h3 {
+        font-size: 1.15rem;
+      }
+
+      .footer-links {
+        gap: 1rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .container {
+        padding: 1.5rem 0.75rem;
+      }
+
+      .content-section {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .section-title {
+        font-size: 1rem;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .toc {
+        padding: 1rem;
+      }
+
+      .cta-btn {
+        display: block;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <a class="logo" href="index.html">
+      <div class="logo-icon">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <span class="logo-name">buuks<span>.in</span></span>
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="pages/about.html">About</a>
+      <a href="pages/delivery.html">Delivery</a>
+      <a href="pages/pPolicy.html">Privacy</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <h1>Terms & Conditions</h1>
+      <p>Please read these terms carefully before using buuks.in. By accessing and using our website, you agree to be bound by these terms and conditions.</p>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+      <h4>📋 Quick Navigation</h4>
+      <ul class="toc-list">
+        <li><a href="#user-agreement">User Agreement</a></li>
+        <li><a href="#intellectual-property">Intellectual Property Rights</a></li>
+        <li><a href="#product-information">Product Information & Availability</a></li>
+        <li><a href="#pricing-payment">Pricing & Payment</a></li>
+        <li><a href="#delivery">Delivery Terms</a></li>
+        <li><a href="#returns-refunds">Returns & Refunds</a></li>
+        <li><a href="#limitations">Limitations of Liability</a></li>
+        <li><a href="#user-conduct">User Conduct</a></li>
+        <li><a href="#privacy">Privacy & Data Protection</a></li>
+        <li><a href="#dispute-resolution">Dispute Resolution</a></li>
+        <li><a href="#contact">Contact Information</a></li>
+      </ul>
+    </div>
+
+    <!-- 1. USER AGREEMENT -->
+    <div class="content-section" id="user-agreement">
+      <h2 class="section-title">User Agreement</h2>
+      
+      <div class="subsection-title">Acceptance of Terms</div>
+      <p>By accessing and using buuks.in ("Website"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+      
+      <div class="subsection-title">Eligibility</div>
+      <p>You must be at least 18 years old to use this website. By using buuks.in, you represent and warrant that you are at least 18 years of age. We reserve the right to terminate accounts of users under 18 years of age.</p>
+      
+      <div class="subsection-title">Account Responsibility</div>
+      <p>If you create an account on buuks.in, you are responsible for maintaining the confidentiality of your account information and password. You agree to accept responsibility for all activities that occur under your account. You must immediately notify us of any unauthorized use of your account.</p>
+      
+      <div class="highlight">
+        <p><strong>📌 Note:</strong> You are responsible for all activities conducted through your account. Keep your login credentials secure and confidential.</p>
+      </div>
+    </div>
+
+    <!-- 2. INTELLECTUAL PROPERTY RIGHTS -->
+    <div class="content-section" id="intellectual-property">
+      <h2 class="section-title">Intellectual Property Rights</h2>
+      
+      <div class="subsection-title">Website Content</div>
+      <p>All content on buuks.in, including but not limited to text, graphics, logos, images, layouts, and software, is the property of buuks.in or its content suppliers and is protected by international copyright laws. You may not reproduce, distribute, transmit, or display any content without our prior written permission.</p>
+      
+      <div class="subsection-title">Book Content</div>
+      <p>The books and literary works sold on buuks.in are protected by copyright law. Purchasers acquire only the right to use the physical or digital books in accordance with applicable law. Reproduction, distribution, or transmission of copyrighted material without permission is prohibited.</p>
+      
+      <div class="subsection-title">Trademarks</div>
+      <p>buuks.in, the buuks.in logo, and all related names and trademarks are the exclusive property of buuks.in. You may not use these marks without our express written permission.</p>
+    </div>
+
+    <!-- 3. PRODUCT INFORMATION & AVAILABILITY -->
+    <div class="content-section" id="product-information">
+      <h2 class="section-title">Product Information & Availability</h2>
+      
+      <div class="subsection-title">Accuracy of Information</div>
+      <p>We strive to provide accurate descriptions, prices, and availability information for all products on our website. However, we do not warrant that product descriptions, pricing, or availability are accurate, complete, or error-free. If you discover an inaccuracy, please notify us immediately.</p>
+      
+      <div class="subsection-title">Product Availability</div>
+      <p>Books are listed on our website based on current inventory. While we make efforts to keep availability information updated, stock may run out unexpectedly. In case of unavailability, we will notify you and either:</p>
+      <ul>
+        <li>Offer you a similar alternative book</li>
+        <li>Provide a full refund of your payment</li>
+        <li>Offer to back-order the item</li>
+      </ul>
+      
+      <div class="subsection-title">Product Images</div>
+      <p>Product images are for illustrative purposes only. The actual book may vary slightly in appearance, condition, or packaging from the images shown on the website.</p>
+      
+      <div class="highlight">
+        <p><strong>💡 Tip:</strong> If you notice any discrepancies in product information, contact us immediately at <a href="mailto:support@buuks.in">support@buuks.in</a></p>
+      </div>
+    </div>
+
+    <!-- 4. PRICING & PAYMENT -->
+    <div class="content-section" id="pricing-payment">
+      <h2 class="section-title">Pricing & Payment</h2>
+      
+      <div class="subsection-title">Price Accuracy</div>
+      <p>All prices listed on buuks.in are in Indian Rupees (₹) and are inclusive of all applicable taxes unless otherwise stated. Prices are subject to change without notice. We reserve the right to cancel orders if there is a pricing error.</p>
+      
+      <div class="subsection-title">Payment Methods</div>
+      <p><strong>Cash on Delivery (COD):</strong> You will pay for your order when the books are delivered to your address. Our delivery partner will collect the payment at your doorstep.</p>
+      
+      <div class="subsection-title">Payment Security</div>
+      <p>We implement industry-standard security measures to protect your payment information. However, we do not store complete payment card details on our servers.</p>
+      
+      <div class="subsection-title">Order Confirmation</div>
+      <p>Upon successful order placement, you will receive an order confirmation email containing your order number, delivery address, and estimated delivery date. Please verify all details in this confirmation.</p>
+      
+      <div class="highlight">
+        <p><strong>✓ Note:</strong> Order confirmation emails are sent to the email address provided during checkout. Check your spam folder if you don't receive it.</p>
+      </div>
+    </div>
+
+    <!-- 5. DELIVERY TERMS -->
+    <div class="content-section" id="delivery">
+      <h2 class="section-title">Delivery Terms</h2>
+      
+      <div class="subsection-title">Delivery Areas</div>
+      <p>We deliver to most addresses across India. Some remote or restricted areas may not be eligible for delivery. You will be notified if your location is not serviceable.</p>
+      
+      <div class="subsection-title">Delivery Timeline</div>
+      <table class="table-responsive">
+        <tr>
+          <th>Delivery Type</th>
+          <th>Estimated Time</th>
+          <th>Delivery Charge</th>
+        </tr>
+        <tr>
+          <td>Standard Delivery</td>
+          <td>3–5 business days</td>
+          <td>₹50</td>
+        </tr>
+        <tr>
+          <td>Free Delivery</td>
+          <td>3–5 business days</td>
+          <td>FREE (on orders ₹499+)</td>
+        </tr>
+      </table>
+      
+      <div class="subsection-title">Important Notes on Delivery</div>
+      <ul>
+        <li>Delivery dates are estimates. We are not liable for delays caused by courier partners, weather, or unforeseen circumstances.</li>
+        <li>Orders are dispatched within 1–2 business days of confirmation.</li>
+        <li>You will receive a tracking ID once your order ships.</li>
+        <li>Delivery is attempted only once. If you are not available, the courier will leave a delivery notice.</li>
+        <li>Please ensure someone is available at the delivery address during business hours (10 AM – 7 PM).</li>
+      </ul>
+      
+      <div class="subsection-title">Delivery Address</div>
+      <p>You are responsible for providing a complete and accurate delivery address. We are not liable for delivery failures due to incomplete or incorrect address information.</p>
+    </div>
+
+    <!-- 6. RETURNS & REFUNDS -->
+    <div class="content-section" id="returns-refunds">
+      <h2 class="section-title">Returns & Refunds</h2>
+      
+      <div class="subsection-title">Return Eligibility</div>
+      <p>Books can be returned within <strong>7 days of delivery</strong> if they meet the following conditions:</p>
+      <ul>
+        <li>The book is in original, unused condition</li>
+        <li>The book jacket and packaging are intact</li>
+        <li>There are no visible signs of wear, damage, or writing</li>
+        <li>All pages are present and unbound</li>
+        <li>The book has not been exposed to water or extreme weather</li>
+      </ul>
+      
+      <div class="subsection-title">Non-Returnable Items</div>
+      <p>The following items cannot be returned:</p>
+      <ul>
+        <li>Books that have been read or show signs of use</li>
+        <li>Books with highlighted text, notes, or markings</li>
+        <li>Damaged, torn, or water-damaged books</li>
+        <li>Books without original packaging or price stickers removed</li>
+        <li>Books damaged due to mishandling by the customer</li>
+      </ul>
+      
+      <div class="subsection-title">How to Return</div>
+      <ol>
+        <li>Contact us at <a href="mailto:support@buuks.in">support@buuks.in</a> with your order number and reason for return</li>
+        <li>Wait for approval confirmation and return shipping instructions</li>
+        <li>Pack the book securely in its original packaging</li>
+        <li>Arrange pickup or drop-off as per instructions provided</li>
+        <li>Refund will be processed within 7–10 business days after we receive and inspect the returned item</li>
+      </ol>
+      
+      <div class="subsection-title">Refund Process</div>
+      <ul>
+        <li>Refunds will be credited back to your original payment method or wallet</li>
+        <li>Return shipping costs may be deducted from the refund amount in case of return due to customer change of mind</li>
+        <li>Free return shipping is provided if the item is defective or damaged in transit</li>
+      </ul>
+      
+      <div class="highlight">
+        <p><strong>⚠️ Important:</strong> Purchases are final. We cannot accept returns for change of mind unless the book is defective or damaged.</p>
+      </div>
+    </div>
+
+    <!-- 7. LIMITATIONS OF LIABILITY -->
+    <div class="content-section" id="limitations">
+      <h2 class="section-title">Limitations of Liability</h2>
+      
+      <div class="subsection-title">Disclaimer of Warranties</div>
+      <p>buuks.in provides its website and services on an "AS-IS" and "AS-AVAILABLE" basis. We make no warranties, express or implied, regarding the website's performance, reliability, or content accuracy. We disclaim all implied warranties, including merchantability and fitness for a particular purpose.</p>
+      
+      <div class="subsection-title">Limitation of Damages</div>
+      <p>In no event shall buuks.in, its owners, employees, or agents be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the website or services. Our total liability is limited to the amount you paid for your order.</p>
+      
+      <div class="subsection-title">Third-Party Services</div>
+      <p>We are not responsible for the actions, content, or services provided by third-party couriers, payment gateways, or other service providers. You use their services at your own risk.</p>
+      
+      <div class="subsection-title">Website Availability</div>
+      <p>While we strive to maintain continuous availability, buuks.in may be temporarily unavailable for maintenance or updates. We are not liable for losses resulting from service interruptions.</p>
+    </div>
+
+    <!-- 8. USER CONDUCT -->
+    <div class="content-section" id="user-conduct">
+      <h2 class="section-title">User Conduct</h2>
+      
+      <div class="subsection-title">Prohibited Activities</div>
+      <p>You agree not to engage in the following activities:</p>
+      <ul>
+        <li>Violating any applicable laws or regulations</li>
+        <li>Infringing on any intellectual property rights</li>
+        <li>Uploading malicious code, viruses, or harmful software</li>
+        <li>Harassing, threatening, or defaming other users or our staff</li>
+        <li>Posting spam, promotional content, or unauthorized advertising</li>
+        <li>Attempting to gain unauthorized access to our systems</li>
+        <li>Scraping, crawling, or bulk downloading of website content</li>
+        <li>Using automated bots or tools to manipulate orders or pricing</li>
+      </ul>
+      
+      <div class="subsection-title">Account Termination</div>
+      <p>We reserve the right to suspend or terminate your account and access to the website if you violate these terms or engage in prohibited activities. No refund will be issued for suspended accounts.</p>
+      
+      <div class="subsection-title">Reviews & Feedback</div>
+      <p>Users who post reviews or feedback on buuks.in agree that their content is original, truthful, and not defamatory. We reserve the right to remove false, offensive, or spam reviews without notice.</p>
+    </div>
+
+    <!-- 9. PRIVACY & DATA PROTECTION -->
+    <div class="content-section" id="privacy">
+      <h2 class="section-title">Privacy & Data Protection</h2>
+      
+      <div class="subsection-title">Data Collection</div>
+      <p>buuks.in collects personal information including name, email, phone number, and delivery address to process your orders and improve our services. We comply with the Information Technology Act, 2000, and applicable data protection laws.</p>
+      
+      <div class="subsection-title">Data Usage</div>
+      <p>Your personal data is used for:</p>
+      <ul>
+        <li>Processing and delivering your orders</li>
+        <li>Sending order updates and promotional content</li>
+        <li>Improving website functionality and user experience</li>
+        <li>Legal and security purposes</li>
+      </ul>
+      
+      <div class="subsection-title">Data Sharing</div>
+      <p>We do not sell or share your data with third parties for marketing purposes. However, we may share necessary information with:</p>
+      <ul>
+        <li>Courier partners for delivery</li>
+        <li>Payment processors for transaction handling</li>
+        <li>Legal authorities if required by law</li>
+      </ul>
+      
+      <div class="subsection-title">Data Security</div>
+      <p>We implement industry-standard security measures including SSL encryption and secure servers. However, no online system is completely secure. We cannot guarantee absolute security of your data.</p>
+      
+      <div class="highlight">
+        <p><strong>🔒 Privacy Policy:</strong> For detailed information on how we handle your data, please refer to our <a href="pages/pPolicy.html">Privacy Policy</a>.</p>
+      </div>
+    </div>
+
+    <!-- 10. DISPUTE RESOLUTION -->
+    <div class="content-section" id="dispute-resolution">
+      <h2 class="section-title">Dispute Resolution</h2>
+      
+      <div class="subsection-title">Governing Law</div>
+      <p>These terms and conditions are governed by and construed in accordance with the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Kolkata, West Bengal, India.</p>
+      
+      <div class="subsection-title">Grievance Redressal</div>
+      <p>If you have any disputes or grievances:</p>
+      <ol>
+        <li>Contact our customer support team at <a href="mailto:support@buuks.in">support@buuks.in</a></li>
+        <li>Provide detailed information about your complaint and order number</li>
+        <li>We will investigate and respond within 5–7 business days</li>
+        <li>If you are unsatisfied with our response, you may escalate to our management</li>
+      </ol>
+      
+      <div class="subsection-title">Dispute Forum</div>
+      <p>Before initiating legal proceedings, both parties agree to attempt informal resolution through mutual discussion. If resolution is not achieved, disputes may be settled through arbitration or legal proceedings as per applicable law.</p>
+    </div>
+
+    <!-- 11. CONTACT INFORMATION -->
+    <div class="content-section" id="contact">
+      <h2 class="section-title">Contact Information</h2>
+      
+      <div class="subsection-title">Get in Touch</div>
+      <p>For any questions, concerns, or disputes regarding these Terms & Conditions, please contact us:</p>
+      
+      <table class="table-responsive">
+        <tr>
+          <th>Channel</th>
+          <th>Details</th>
+        </tr>
+        <tr>
+          <td><strong>Email</strong></td>
+          <td><a href="mailto:support@buuks.in">support@buuks.in</a></td>
+        </tr>
+        <tr>
+          <td><strong>Phone/WhatsApp</strong></td>
+          <td>+91 99999 99999</td>
+        </tr>
+        <tr>
+          <td><strong>Address</strong></td>
+          <td>Kolkata, West Bengal, India — 700001</td>
+        </tr>
+        <tr>
+          <td><strong>Support Hours</strong></td>
+          <td>Mon–Sat, 10 AM – 7 PM IST</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- CHANGES TO TERMS -->
+    <div class="content-section">
+      <h2 class="section-title">Changes to Terms</h2>
+      
+      <p>buuks.in reserves the right to modify these Terms & Conditions at any time. Changes will be effective immediately upon posting to the website. Your continued use of buuks.in after any modifications constitutes your acceptance of the updated terms. We recommend reviewing these terms periodically to stay informed of any changes.</p>
+      
+      <p><strong>Last Updated:</strong> March 19, 2026</p>
+    </div>
+
+    <!-- CTA SECTION -->
+    <div class="cta-section">
+      <h3>Questions About Our Terms?</h3>
+      <p>We're here to help. If you have any questions about these Terms & Conditions, don't hesitate to reach out to our support team.</p>
+      <a href="mailto:support@buuks.in" class="cta-btn">Contact Support</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="pages/about.html">About Us</a>
+      <a href="pages/delivery.html">Delivery Info</a>
+      <a href="pages/pPolicy.html">Privacy Policy</a>
+      <a href="pages/hOrder.html">How to Order</a>
+    </div>
+    <p>© 2026 <strong>buuks.in</strong> — All rights reserved. Built with ♥ in India</p>
+    <p style="font-size: 0.8rem; margin-top: 1rem;">Please read and understand these Terms & Conditions before making a purchase on buuks.in</p>
+  </footer>
+</body>
+</html>
