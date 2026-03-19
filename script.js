@@ -623,17 +623,8 @@ async function submitOrder() {
   const orderId   = generateOrderId();
   const timestamp = new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'});
 
-  // Add Firebase user info if logged in
-  let userId = '';
-  let userEmail = email;
-  if (typeof firebaseAuth !== 'undefined' && firebaseAuth.isUserLoggedIn()) {
-    userId = firebaseAuth.getUserUID();
-    userEmail = firebaseAuth.getUserEmail() || email;
-    console.log('✓ Order from authenticated user:', userId);
-  }
-
-  const payload = { orderId, timestamp, name, phone, email: userEmail, address, note, titles, isbns, totalQty,
-    subtotal: `₹${subAmt}`, delivery: delAmt===0?'FREE':`₹${delAmt}`, totalAmt: `₹${totalAmt}`, userId };
+  const payload = { orderId, timestamp, name, phone, email, address, note, titles, isbns, totalQty,
+    subtotal: `₹${subAmt}`, delivery: delAmt===0?'FREE':`₹${delAmt}`, totalAmt: `₹${totalAmt}` };
 
   const scriptReady = APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE';
 
@@ -747,7 +738,7 @@ $('detailBack').addEventListener('click', closeDetail);
 $('detailBackdrop').addEventListener('click', closeDetail);
 
 // Cart
-$('cartBtn').addEventListener('click', ()=>{ loadCartFromStorage(); updateCartUI(); $('cartOverlay').classList.add('open'); document.body.style.overflow='hidden'; });
+$('cartBtn').addEventListener('click', ()=>{ $('cartOverlay').classList.add('open'); document.body.style.overflow='hidden'; });
 $('cartClose').addEventListener('click', ()=>{ $('cartOverlay').classList.remove('open'); document.body.style.overflow=''; });
 $('cartBackdrop').addEventListener('click', ()=>{ $('cartOverlay').classList.remove('open'); document.body.style.overflow=''; });
 $('clearCartBtn').addEventListener('click', ()=>{
@@ -804,7 +795,7 @@ window.addEventListener('beforeunload', () => {
 // Sync cart with other pages when returning to this page
 window.addEventListener('focus', () => {
   loadCartFromStorage();
-  updateCartUI();
+  updateCartCount();
 });
 
 /* ══ MOBILE MENU ══ */
