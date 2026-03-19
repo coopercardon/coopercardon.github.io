@@ -48,10 +48,27 @@ function loadCartFromStorage() {
   }
 }
 
+/* Called after Firestore cart loaded on login */
+async function syncCartFromCloud() {
+  if (typeof firebaseAuth === 'undefined' || !firebaseAuth.isUserLoggedIn()) return;
+  const cloudCart = await firebaseAuth.loadCartFromFirestore();
+  if (cloudCart && Object.keys(cloudCart).length > 0) {
+    cart = cloudCart;
+    localStorage.setItem('buuksCart', JSON.stringify(cart));
+    updateCartUI();
+    renderBooks();
+    console.log('✓ Cart synced from Firestore');
+  }
+}
+
 function saveCartToStorage() {
   try {
     localStorage.setItem('buuksCart', JSON.stringify(cart));
   } catch (e) {}
+  /* Cloud sync — save to Firestore if user is logged in */
+  if (typeof firebaseAuth !== 'undefined' && firebaseAuth.isUserLoggedIn()) {
+    firebaseAuth.saveCartToFirestore(cart);
+  }
 }
 
 /* ── DATA LOADING ── */
@@ -655,10 +672,6 @@ async function submitOrder() {
   }
 
   closeOrderForm();
-  // Save order to Firestore for cross-device history
-  if (typeof firebaseAuth !== 'undefined') {
-    firebaseAuth.saveOrderToFirestore(payload);
-  }
   showSuccessScreen(orderId, !scriptReady);
   cart = {};
   updateCartUI();
@@ -779,6 +792,23 @@ document.addEventListener('keydown', e=>{
 loadCartFromStorage();
 
 loadBooks();
+
+// Sync cart from Firestore once auth is ready
+(function waitForAuth() {
+  if (typeof firebaseAuth !== 'undefined') {
+    // Poll until auth state is resolved (max 5s)
+    var attempts = 0;
+    var check = setInterval(function() {
+      attempts++;
+      if (firebaseAuth.isUserLoggedIn()) {
+        clearInterval(check);
+        syncCartFromCloud();
+      } else if (attempts > 25) {
+        clearInterval(check); // not logged in, use localStorage
+      }
+    }, 200);
+  }
+})();
 
 // Auto-open cart if coming from product page with #viewCart hash
 if(window.location.hash === '#viewCart') {
