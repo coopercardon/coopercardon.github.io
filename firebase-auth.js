@@ -382,13 +382,12 @@ function updateUIAfterAuth() {
       + '<span style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escHtml(name.split(' ')[0]) + '</span>'
       + '<svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;opacity:.7;"><polyline points="2,4 6,8 10,4"/></svg>';
     signInBtn.title   = getUserEmail();
-    signInBtn.onclick = e => { e.stopPropagation(); toggleUserMenu(); };
   } else {
     signInBtn.innerHTML =
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
       + '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>'
       + '<circle cx="12" cy="7" r="4"></circle></svg> Sign In';
-    signInBtn.onclick = openSignInModal;
+
   }
 }
 
@@ -478,7 +477,15 @@ function prepareOrderWithUserInfo(orderData) {
 document.addEventListener('DOMContentLoaded', () => {
   initializeFirebase();
 
-  /* signInBtn click is handled dynamically by updateUIAfterAuth — do not add a static listener here */
+  /* Single permanent listener — checks auth state at click time */
+  document.getElementById('signInBtn')?.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (isUserLoggedIn()) {
+      toggleUserMenu();
+    } else {
+      openSignInModal();
+    }
+  });
   document.getElementById('signinModalClose')?.addEventListener('click', closeSignInModal);
   document.getElementById('signinModalOverlay')?.addEventListener('click', closeSignInModal);
   document.addEventListener('keydown', e => {
