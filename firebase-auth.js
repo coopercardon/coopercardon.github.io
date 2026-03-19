@@ -41,6 +41,17 @@ function initializeFirebase() {
     if (user) {
       saveUserToLocalStorage(user);
       closeSignInModal();
+      /* Sync cart from Firestore on login */
+      loadCartFromFirestore().then(function(firestoreCart) {
+        if (firestoreCart && Object.keys(firestoreCart).length > 0) {
+          localStorage.setItem('buuksCart', JSON.stringify(firestoreCart));
+          /* Tell script.js to reload cart if available */
+          if (typeof loadCartFromStorage === 'function') {
+            loadCartFromStorage();
+            if (typeof updateCartUI === 'function') updateCartUI();
+          }
+        }
+      });
     } else {
       clearUserFromLocalStorage();
     }
@@ -215,6 +226,36 @@ async function fetchOrdersFromFirestore() {
   } catch(err) {
     console.error('Firestore fetch error:', err);
     return [];
+  }
+}
+
+/* ═══════════════════════════════════
+   FIRESTORE — CART
+═══════════════════════════════════ */
+
+/* Save entire cart object to Firestore */
+async function saveCartToFirestore(cartData) {
+  if (!currentUser || !db) return;
+  try {
+    await db.collection('users').doc(currentUser.uid)
+            .collection('cart').doc('current')
+            .set({ items: cartData, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+  } catch(err) {
+    console.error('Cart save error:', err);
+  }
+}
+
+/* Load cart from Firestore — returns cart object or null */
+async function loadCartFromFirestore() {
+  if (!currentUser || !db) return null;
+  try {
+    const doc = await db.collection('users').doc(currentUser.uid)
+                        .collection('cart').doc('current').get();
+    if (doc.exists && doc.data().items) return doc.data().items;
+    return null;
+  } catch(err) {
+    console.error('Cart load error:', err);
+    return null;
   }
 }
 
@@ -616,6 +657,8 @@ window.firebaseAuth = {
   prepareOrderWithUserInfo,
   openSignInModal,
   closeSignInModal,
+  saveCartToFirestore,
+  loadCartFromFirestore,
   saveOrderToFirestore,
   fetchOrdersFromFirestore,
   openOrderHistory
