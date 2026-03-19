@@ -623,8 +623,17 @@ async function submitOrder() {
   const orderId   = generateOrderId();
   const timestamp = new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'});
 
-  const payload = { orderId, timestamp, name, phone, email, address, note, titles, isbns, totalQty,
-    subtotal: `₹${subAmt}`, delivery: delAmt===0?'FREE':`₹${delAmt}`, totalAmt: `₹${totalAmt}` };
+  // Add Firebase user info if logged in
+  let userId = '';
+  let userEmail = email;
+  if (typeof firebaseAuth !== 'undefined' && firebaseAuth.isUserLoggedIn()) {
+    userId = firebaseAuth.getUserUID();
+    userEmail = firebaseAuth.getUserEmail() || email;
+    console.log('✓ Order from authenticated user:', userId);
+  }
+
+  const payload = { orderId, timestamp, name, phone, email: userEmail, address, note, titles, isbns, totalQty,
+    subtotal: `₹${subAmt}`, delivery: delAmt===0?'FREE':`₹${delAmt}`, totalAmt: `₹${totalAmt}`, userId };
 
   const scriptReady = APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE';
 
