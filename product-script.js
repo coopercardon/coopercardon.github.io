@@ -356,11 +356,9 @@ async function renderProduct(book) {
 
   const coverHtml = imgSrc
     ? `<img src="${esc(imgSrc)}" alt="${esc(book.title)}" loading="lazy" onerror="this.src='https://covers.openlibrary.org/b/isbn/${cleanIsbn}-M.jpg'; this.onerror=null;"/>`
-    : `<div class="detail-cover-ph" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--bg-secondary);">
-        <div style="text-align:center;">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom:12px;opacity:0.5;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-          <p style="font-size:13px;color:var(--text-secondary);">${esc(book.title)}</p>
-        </div>
+    : `<div class="product-cover-ph">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <p>${esc(book.title)}</p>
       </div>`;
 
   const inCart = !!cart[book.isbn || book.title];
@@ -369,7 +367,7 @@ async function renderProduct(book) {
   if(book.year) metaHtml += `<div class="pmeta-item"><div class="pmeta-label">Year</div><div class="pmeta-val">${esc(book.year)}</div></div>`;
   if(book.language) metaHtml += `<div class="pmeta-item"><div class="pmeta-label">Language</div><div class="pmeta-val">${esc(book.language)}</div></div>`;
   if(book.isbn) metaHtml += `<div class="pmeta-item"><div class="pmeta-label">ISBN</div><div class="pmeta-val">${esc(book.isbn)}</div></div>`;
-  if(book.genre) metaHtml += `<div class="pmeta-item"><div class="pmeta-label">Genre</div><div class="pmeta-val">${esc(book.genre)}${book.subgenre ? ' — ' + esc(book.subgenre) : ''}</div></div>`;
+  if(book.genre) metaHtml += `<div class="pmeta-item"><div class="pmeta-label">Genre</div><div class="pmeta-val">${esc(book.genre)}${book.subgenre ? ' · ' + esc(book.subgenre) : ''}</div></div>`;
 
   $('breadcrumbTitle').textContent = book.title || 'Book';
 
@@ -384,15 +382,21 @@ async function renderProduct(book) {
     const parsedMd = parseMarkdown(mdContent);
     descriptionHtml = `
       <div class="product-desc">
-        <div class="product-desc-label">About this book</div>
-        <div class="product-desc-content" style="line-height:1.8;color:var(--text-primary);">${parsedMd}</div>
+        <div class="product-desc-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          About this book
+        </div>
+        <div class="product-desc-content">${parsedMd}</div>
       </div>
     `;
   } else if(book.description) {
     descriptionHtml = `
       <div class="product-desc">
-        <div class="product-desc-label">About this book</div>
-        <p>${esc(book.description)}</p>
+        <div class="product-desc-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          About this book
+        </div>
+        <div class="product-desc-content"><p>${esc(book.description)}</p></div>
       </div>
     `;
   }
@@ -407,10 +411,10 @@ async function renderProduct(book) {
       </div>
       <div class="product-info">
         <div class="status-badge ${avail ? 'in-stock' : 'sold-out'}">
-          ${avail ? '✓ In Stock' : '❌ Sold Out'}
+          ${avail ? 'In Stock' : 'Sold Out'}
         </div>
         <h1>${esc(book.title || 'Untitled')}</h1>
-        <div class="product-author">by ${esc(book.author || 'Unknown Author')}</div>
+        <div class="product-author">${esc(book.author || 'Unknown Author')}</div>
         
         <div class="product-meta">
           ${metaHtml}
@@ -424,21 +428,27 @@ async function renderProduct(book) {
           ${avail ? `
             <button class="btn-add-cart${inCart ? ' in-cart' : ''}" id="addCartBtn" onclick="toggleCart(this)">
               ${inCart 
-                ? '<svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1,6 4.5,9.5 11,2"/></svg> Added to Cart'
-                : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Add to Cart'
+                ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Added to Cart'
+                : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Add to Cart'
               }
             </button>
             <button class="btn-order" id="orderBtn" onclick="orderNow()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
               Order Now
             </button>
           ` : `
-            <button class="btn-add-cart" disabled style="opacity:0.5;cursor:not-allowed;">Sold Out</button>
+            <button class="btn-add-cart" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              Sold Out
+            </button>
           `}
         </div>
 
-        <div style="margin-top:24px;">
-          <a href="index.html" style="color:var(--accent);text-decoration:none;font-weight:500;">← Back to catalog</a>
+        <div class="back-to-catalog">
+          <a href="index.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to catalog
+          </a>
         </div>
       </div>
     </div>
@@ -464,20 +474,19 @@ async function getRelatedBooksHtml(book) {
     const imgSrc = b.cover_url
       ? b.cover_url
       : cleanIsbn ? `https://covers.openlibrary.org/b/isbn/${cleanIsbn}-M.jpg` : '';
-    const avail = isAvail(b.available);
 
     return `
-      <a href="product.html?isbn=${encodeURIComponent(b.isbn)}" style="text-decoration:none;color:inherit;">
-        <div style="cursor:pointer;">
-          <div style="aspect-ratio:3/4;background:var(--bg-secondary);border-radius:8px;overflow:hidden;margin-bottom:12px;display:flex;align-items:center;justify-content:center;">
+      <a href="product.html?isbn=${encodeURIComponent(b.isbn)}">
+        <div>
+          <div class="cover">
             ${imgSrc 
-              ? `<img src="${imgSrc}" alt="${esc(b.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>` 
-              : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="opacity:0.5;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`
+              ? `<img src="${imgSrc}" alt="${esc(b.title)}" loading="lazy"/>` 
+              : `<div style="display:flex;align-items:center;justify-content:center;height:100%;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="opacity:0.3;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>`
             }
           </div>
-          <div style="font-weight:500;font-size:14px;line-height:1.3;margin-bottom:4px;">${esc(b.title)}</div>
-          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">${esc(b.author)}</div>
-          <div style="font-weight:600;font-size:14px;">${esc(b.price)}</div>
+          <div class="title">${esc(b.title)}</div>
+          <div class="author">${esc(b.author)}</div>
+          <div class="price">${esc(b.price)}</div>
         </div>
       </a>
     `;
@@ -485,7 +494,10 @@ async function getRelatedBooksHtml(book) {
 
   return `
     <div class="related-books">
-      <h2>More from ${book.genre || 'our collection'}</h2>
+      <h2>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.5rem;vertical-align:middle;color:var(--accent);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        More from ${book.genre || 'our collection'}
+      </h2>
       <div class="related-grid">
         ${cardsHtml}
       </div>
