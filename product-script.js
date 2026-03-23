@@ -495,7 +495,14 @@ async function renderProduct(book) {
   `;
 
   $('productContent').innerHTML = html;
+  // inside renderProduct, at the very end
+// ...
+setTimeout(setupProductImageClick, 100);   // small delay to ensure DOM updated
+// inside renderProduct
+const extra = (book.images || '').split(/[\s|,|]+/).filter(Boolean);
+viewerImages = [primaryImg, ...extra].filter(Boolean);
 }
+
 
 async function getRelatedBooksHtml(book) {
   const related = allBooks
@@ -913,5 +920,141 @@ function sliderGoTo(idx) {
     if (dot) dot.style.background = i === idx ? '#fff' : 'rgba(255,255,255,0.5)';
   });
 }
+// ── Fullscreen Image Viewer ──
+let viewerModal = null;
+let viewerImg = null;
+let viewerImages = [];       // array of image URLs
+let currentViewerIndex = 0;
+
+function initImageViewer() {
+  viewerModal = $('imageViewerModal');
+  viewerImg   = $('viewerImg');
+  if (!viewerModal) return;
+
+  const closeBtn   = $('viewerClose');
+  const backdrop   = $('viewerBackdrop');
+  const prevBtn    = $('viewerPrev');
+  const nextBtn    = $('viewerNext');
+
+  // Close handlers
+  closeBtn.addEventListener('click', closeViewer);
+  backdrop.addEventListener('click', closeViewer);
+  viewerModal.addEventListener('click', e => {
+    if (e.target === viewerModal || e.target === backdrop) closeViewer();
+  });
+
+  // Navigation
+  prevBtn.addEventListener('click', () => navigateViewer(-1));
+  nextBtn.addEventListener('click', () => navigateViewer(1));
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (!viewerModal.classList.contains('show')) return;
+    if (e.key === 'Escape') closeViewer();
+    if (e.key === 'ArrowLeft')  navigateViewer(-1);
+    if (e.key === 'ArrowRight') navigateViewer(1);
+  });
+
+  // Touch swipe
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  viewerImg.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  viewerImg.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 60) { // swipe threshold
+      navigateViewer(diff > 0 ? 1 : -1);
+    }
+  }
+}
+
+function openViewer(index = 0) {
+  if (viewerImages.length === 0) return;
+
+  currentViewerIndex = Math.max(0, Math.min(index, viewerImages.length - 1));
+  viewerImg.src = viewerImages[currentViewerIndex];
+  viewerImg.alt = `Book image ${currentViewerIndex + 1} of ${viewerImages.length}`;
+
+  updateNavButtons();
+
+  viewerModal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeViewer() {
+  viewerModal.classList.remove('show');
+  document.body.style.overflow = '';
+  // Optional: reset src to stop loading if needed
+  setTimeout(() => { viewerImg.src = ''; }, 300);
+}
+
+function navigateViewer(direction) {
+  currentViewerIndex = (currentViewerIndex + direction + viewerImages.length) % viewerImages.length;
+  viewerImg.src = viewerImages[currentViewerIndex];
+  viewerImg.alt = `Book image ${currentViewerIndex + 1} of ${viewerImages.length}`;
+  updateNavButtons();
+}
+
+function updateNavButtons() {
+  $('viewerPrev').disabled = viewerImages.length <= 1;
+  $('viewerNext').disabled = viewerImages.length <= 1;
+}
+
+// ── Connect to product image ──
+function setupProductImageClick() {
+  const mainCover = document.querySelector('.product-cover img');
+  if (!mainCover) return;
+
+  // Get current book (we already have currentBook from renderProduct)
+  if (!currentBook) return;
+
+  // Primary image
+  let primary = mainCover.src;
+
+  // Extra images from sheet column "images" or "extra_images" – change column name if different
+  const extraRaw = (currentBook.images || currentBook.extra_images || '').trim();
+  
+  let extras = [];
+  if (extraRaw) {
+    // Split on | or , or spaces – be flexible
+    extras = extraRaw
+      .split(/[\s|,|\|]+/)
+      .map(url => url.trim())
+      .filter(url => url && url.startsWith('http')); // only valid URLs
+  }
+
+  // Combine – primary first
+  viewerImages = [primary, ...extras].filter(Boolean); // remove any empty
+
+  // If no valid images → fallback to just primary
+  if (viewerImages.length === 0) {
+    viewerImages = [primary];
+  }
+
+  mainCover.style.cursor = viewerImages.length > 1 ? 'zoom-in' : 'pointer';
+  mainCover.title = viewerImages.length > 1 
+    ? 'Click to view gallery' 
+    : 'Click to enlarge';
+
+  mainCover.addEventListener('click', () => {
+    openViewer(0);           // always start with main image
+  });
+}
+
+// Call these when page is ready
+document.addEventListener('DOMContentLoaded', () => {
+  initImageViewer();
+  // Wait until renderProduct finishes (or call it after await renderProduct)
+  // For simplicity — call it after a small delay or hook into renderProduct end
+  setTimeout(setupProductImageClick, 800); // adjust timing if needed
+});
 
 initMobileMenu();
