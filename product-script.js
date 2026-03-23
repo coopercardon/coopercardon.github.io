@@ -501,6 +501,17 @@ setTimeout(setupProductImageClick, 100);   // small delay to ensure DOM updated
 // inside renderProduct
 const extra = (book.images || '').split(/[\s|,|]+/).filter(Boolean);
 viewerImages = [primaryImg, ...extra].filter(Boolean);
+  // ... existing code ...
+
+  $('productContent').innerHTML = html;
+
+  // Now that the DOM is updated — attach listeners
+  setupProductImageClick();
+
+  // Optional: re-init slider dots if you have multiple images
+  if (window._galleryImages?.length > 1) {
+    sliderGoTo(0); // reset to first image & update dots
+  }
 }
 
 
@@ -1011,42 +1022,54 @@ function updateNavButtons() {
 // ── Connect to product image ──
 function setupProductImageClick() {
   const mainCover = document.querySelector('.product-cover img');
-  if (!mainCover) return;
+  if (!mainCover) {
+    console.warn("Main cover image not found");
+    return;
+  }
 
-  // Get current book (we already have currentBook from renderProduct)
-  if (!currentBook) return;
+  // Reset gallery each time we set up (important when switching books)
+  viewerImages = [];
 
-  // Primary image
-  let primary = mainCover.src;
+  // Primary image (always use the currently displayed src)
+  const primary = mainCover.currentSrc || mainCover.src;
+  if (primary) viewerImages.push(primary.trim());
 
-  // Extra images from sheet column "images" or "extra_images" – change column name if different
-  const extraRaw = (currentBook.images || currentBook.extra_images || '').trim();
-  
-  let extras = [];
+  // Extra images from sheet (column name: images or extra_images)
+  const extraRaw = (currentBook?.images || currentBook?.extra_images || '').trim();
+
   if (extraRaw) {
-    // Split on | or , or spaces – be flexible
-    extras = extraRaw
-      .split(/[\s|,|\|]+/)
-      .map(url => url.trim())
-      .filter(url => url && url.startsWith('http')); // only valid URLs
+    const extras = extraRaw
+      .split(/[\s|,\|]+/)                     // flexible separator
+      .map(u => u.trim())
+      .filter(u => u && u.startsWith('http')); // only valid http(s) URLs
+
+    viewerImages.push(...extras);
   }
 
-  // Combine – primary first
-  viewerImages = [primary, ...extras].filter(Boolean); // remove any empty
+  // Remove duplicates (in case primary is listed again)
+  viewerImages = [...new Set(viewerImages.filter(Boolean))];
 
-  // If no valid images → fallback to just primary
-  if (viewerImages.length === 0) {
-    viewerImages = [primary];
-  }
+  console.log('Viewer images prepared:', viewerImages);
 
+  // Visual feedback
   mainCover.style.cursor = viewerImages.length > 1 ? 'zoom-in' : 'pointer';
-  mainCover.title = viewerImages.length > 1 
-    ? 'Click to view gallery' 
-    : 'Click to enlarge';
+  mainCover.title = viewerImages.length > 1 ? 'Tap to view gallery' : 'Tap to enlarge';
 
-  mainCover.addEventListener('click', () => {
-    openViewer(0);           // always start with main image
-  });
+  // Helper to open viewer
+  const openOnInteraction = (e) => {
+    // Prevent any default behavior that might block (zoom, scroll, etc.)
+    e.preventDefault?.();
+    console.log("Image interaction detected → opening viewer");
+    openViewer(0); // always start with the main/primary image
+  };
+
+  // Attach MULTIPLE events — covers almost all mobile & desktop cases
+  mainCover.addEventListener('click', openOnInteraction);
+  mainCover.addEventListener('pointerdown', openOnInteraction, { passive: false });
+  mainCover.addEventListener('touchend', openOnInteraction, { passive: false });
+
+  // Optional: long-press prevention (some browsers zoom on hold)
+  mainCover.addEventListener('contextmenu', e => e.preventDefault());
 }
 
 // Call these when page is ready
