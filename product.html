@@ -18,10 +18,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="styles.css">
 <style>
-.product-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin: 60px 0; align-items: start; }
+/* .product-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin: 60px 0; align-items: start; } */
+.product-hero {
+  display: grid;
+  grid-template-columns: minmax(380px, 460px) 1fr;   /* ← wider image column */
+  gap: 48px;
+  margin: 60px 0;
+  align-items: start;
+}
 .product-cover-box { position: relative; }
-.product-cover { width: 100%; aspect-ratio: 3/4; background: var(--bg-card); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
-.product-cover img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s ease; }
+/* .product-cover { width: 90%; height: 90%; aspect-ratio: 3/4; background: var(--bg-card); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; } */
+.product-cover {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* .product-cover img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s ease; } */
+.product-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;           /* keeps full cover visible – don't change to cover */
+}
 .product-info h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; line-height: 1.2; }
 .product-author { font-size: 18px; color: var(--text-secondary); margin-bottom: 24px; }
 .product-meta { display: flex; gap: 24px; margin-bottom: 32px; padding: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
@@ -60,10 +82,29 @@
 .loading-state { padding: 60px 20px; text-align: center; }
 .loading-state p { color: var(--text-secondary); }
 @media (max-width: 768px) {
-  .product-hero { grid-template-columns: 1fr; gap: 32px; }
-  .product-info h1 { font-size: 24px; }
-  .product-meta { gap: 16px; }
-  .product-actions { flex-direction: column; }
+  .product-cover {
+    width: 75%;                           /* ← 70–80% feels best on most phones */
+    max-width: 340px;                     /* prevents it from getting too huge on bigger phones */
+    margin: 0 auto;                       /* centers the image nicely */
+    aspect-ratio: 3/4;
+  }
+  /* .product-hero { grid-template-columns: 1fr; gap: 32px; } */
+  .product-hero {
+    grid-template-columns: 1fr;           /* stacks image on top of text */
+    gap: 32px;                            /* reasonable spacing */
+    margin: 32px 0;                       /* less vertical space on small screens */
+  }
+  .product-info h1 {
+    font-size: 24px;                      /* or 26px */
+  }
+
+  .product-meta {
+    gap: 16px;
+  }
+
+  .product-actions {
+    flex-direction: column;
+  }
   .related-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
 </style>
