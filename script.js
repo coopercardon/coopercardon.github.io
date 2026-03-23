@@ -312,11 +312,11 @@ function card(b,i) {
 
 /* ── DETAIL PAGE ── */
 function openDetail(isbn) {
-  // Redirect to product page in new tab for better SEO and shareability
   const b = allBooks.find(x => (x.isbn||x.title) === isbn);
   if (!b) return;
-  window.open(`product.html?isbn=${encodeURIComponent(b.isbn||b.title)}`, '_blank');
-  return;
+  // Use book title as URL slug (e.g. ?book=the-alchemist)
+  const slug = (b.title||'').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  window.open(`product.html?book=${encodeURIComponent(slug)}`, '_blank');
 }
 
 function openDetailModal_backup(isbn) {
