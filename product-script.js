@@ -259,9 +259,19 @@ function getURLParam(param) {
   return params.get(param);
 }
 
+function slugify(title) {
+  return (title||'').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
 function findBook() {
+  // New: match by title slug (?book=the-alchemist)
+  const bookParam = getURLParam('book');
+  if (bookParam) {
+    return allBooks.find(b => slugify(b.title) === bookParam.toLowerCase());
+  }
+  // Legacy: match by ISBN (?isbn=...)
   const isbn = getURLParam('isbn');
-  if(!isbn) return null;
+  if (!isbn) return null;
   return allBooks.find(b => {
     const bookIsbn = (b.isbn || '').replace(/[\s\-]/g, '');
     const paramIsbn = isbn.replace(/[\s\-]/g, '');
@@ -606,7 +616,7 @@ function cartCheckout() {
 function updateMetaTags(book) {
   const cleanIsbn = (book.isbn || '').replace(/[^0-9X]/gi, '').trim();
   const coverUrl = book.cover_url || (cleanIsbn ? `https://covers.openlibrary.org/b/isbn/${cleanIsbn}-M.jpg` : '');
-  const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?isbn=${encodeURIComponent(book.isbn)}`;
+  const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?book=${encodeURIComponent(slugify(book.title))}`;
   
   document.title = `${book.title} by ${book.author} — Buuks.in`;
   
