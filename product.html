@@ -107,6 +107,119 @@
   }
   .related-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
+/* ── Fullscreen Image Viewer ── */
+.image-viewer-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.92);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  touch-action: manipulation; /* better touch behavior */
+}
+
+.image-viewer-modal.show {
+  display: flex;
+  opacity: 1;
+}
+
+.viewer-backdrop {
+  position: absolute;
+  inset: 0;
+  cursor: zoom-out;
+}
+
+.viewer-content {
+  position: relative;
+  max-width: 96vw;
+  max-height: 96vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewer-img {
+  max-width: 96vw;
+  max-height: 96vh;
+  object-fit: contain;
+  transform: scale(1);
+  transition: transform 0.18s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  pointer-events: auto;
+  user-select: none;
+}
+
+.viewer-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: rgba(0,0,0,0.4);
+  color: white;
+  border: none;
+  font-size: 42px;
+  line-height: 1;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.viewer-close:hover {
+  background: rgba(255,255,255,0.15);
+  transform: scale(1.1);
+}
+
+.viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  color: white;
+  border: none;
+  font-size: 48px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.product-cover img {
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent; /* removes blue highlight on tap */
+}
+.viewer-nav.prev { left: 20px; }
+.viewer-nav.next { right: 20px; }
+
+.viewer-nav:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.viewer-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .viewer-nav { width: 50px; height: 50px; font-size: 36px; }
+  .viewer-close { top: 16px; right: 16px; width: 44px; height: 44px; font-size: 36px; }
+}
 </style>
 </head>
 <body>
@@ -403,6 +516,22 @@
   <div class="os-sub" id="os-sub-msg">We've saved your order. Our team will contact you to confirm delivery!</div>
   <div class="os-order-id" id="osOrderId">Order #BK000001</div>
   <button class="os-back" id="osBackBtn">Continue Shopping</button>
+</div>
+<!-- Fullscreen Image Viewer Modal -->
+<div class="image-viewer-modal" id="imageViewerModal">
+  <div class="viewer-backdrop" id="viewerBackdrop"></div>
+  
+  <div class="viewer-content">
+    <!-- Close button -->
+    <button class="viewer-close" id="viewerClose" aria-label="Close">×</button>
+    
+    <!-- Navigation arrows -->
+    <button class="viewer-nav prev" id="viewerPrev" aria-label="Previous image">‹</button>
+    <button class="viewer-nav next" id="viewerNext" aria-label="Next image">›</button>
+    
+    <!-- Main image -->
+    <img class="viewer-img" id="viewerImg" alt="Book cover fullscreen" draggable="false">
+  </div>
 </div>
 
 <!-- JSON-LD STRUCTURED DATA PLACEHOLDER -->
